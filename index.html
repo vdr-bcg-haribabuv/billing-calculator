@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Billing Calculator</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        input, label { font-size: 16px; padding: 5px; }
+        button { font-size: 16px; padding: 6px 12px; }
+        table { width: 350px; margin-top: 15px; border-collapse: collapse; }
+        td, th { border: 1px solid #000; padding: 6px; text-align: right; }
+        th { text-align: center; }
+
+        @media print {
+            button, input { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<h2 id="shopName"></h2>
+<p id="shopAddress"></p>
+
+<p>
+<b>Bill No:</b> <span id="billNo"></span><br>
+<b>Date:</b> <span id="billDate"></span>
+</p>
+
+<input type="number" id="priceInput" placeholder="Enter amount" autofocus />
+<button onclick="addPrice()">Add</button>
+
+<table>
+    <thead>
+        <tr><th>Price</th></tr>
+    </thead>
+    <tbody id="priceTable"></tbody>
+    <tfoot>
+        <tr>
+            <th>Total: ₹<span id="total">0</span></th>
+        </tr>
+    </tfoot>
+</table>
+
+<br>
+<button onclick="window.print()">Print Receipt</button>
+<a href="config.html"><button>Config</button></a>
+
+<script>
+let total = 0;
+let billNo = localStorage.getItem("billNo") || 1;
+document.getElementById("billNo").innerText = billNo;
+
+const now = new Date();
+document.getElementById("billDate").innerText = now.toLocaleString();
+
+function loadConfig() {
+    document.getElementById("shopName").innerText =
+        localStorage.getItem("shopName") || "My Shop";
+    document.getElementById("shopAddress").innerText =
+        localStorage.getItem("shopAddress") || "";
+}
+loadConfig();
+
+function addPrice() {
+    const input = document.getElementById("priceInput");
+    const value = parseFloat(input.value);
+    if (isNaN(value)) return;
+
+    total += value;
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${value.toFixed(2)}</td>`;
+    document.getElementById("priceTable").appendChild(row);
+
+    document.getElementById("total").innerText = total.toFixed(2);
+    input.value = "";
+    input.focus();
+}
+
+document.getElementById("priceInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") addPrice();
+});
+
+window.onafterprint = () => {
+    localStorage.setItem("billNo", Number(billNo) + 1);
+    location.reload();
+};
+</script>
+
+</body>
+</html>
