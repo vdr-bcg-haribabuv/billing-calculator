@@ -129,6 +129,7 @@ tfoot th {
 
 <div style="text-align:center;">
 <button class="print" onclick="printBill()">Print</button>
+<button class="add" onclick="clearBill()">New Bill</button>
 <a href="bills.html"><button class="bills">Today's Bills</button></a>
 <a href="config.html"><button class="config">Config</button></a>
 </div>
@@ -178,8 +179,31 @@ function printBill() {
   localStorage.setItem("billNo", billNo + 1);
   window.print();
 }
+function clearBill() {
+  prices = [];
+  total = 0;
+  priceTable.innerHTML = "";
+  totalSpan.innerText = "0.00";
+  priceInput.value = "";
+}
+  
 
 const totalSpan = document.getElementById("total");
+  // VIEW BILL MODE
+const params = new URLSearchParams(window.location.search);
+if (params.get("view") === "1") {
+  const index = localStorage.getItem("viewBillIndex");
+  const bills = JSON.parse(localStorage.getItem("bills") || "[]");
+  const bill = bills[index];
+
+  if (bill) {
+    clearBill();
+    bill.prices.forEach(p => addPrice(p));
+    billNo.innerText = bill.billNo;
+    billDate.innerText = new Date(bill.date).toLocaleString();
+  }
+}
+
 </script>
 <div class="print-footer">
   Thank you — Visit again!
