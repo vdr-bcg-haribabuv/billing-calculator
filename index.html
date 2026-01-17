@@ -1,3 +1,7 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Billing Calculator</title>
 <style>
 body {
   font-family: Arial, sans-serif;
@@ -60,3 +64,99 @@ tfoot th {
 }
 
 /* PRINT CLEAN */
+@media print {
+  body { background: white; }
+  button, input, a { display: none; }
+  table { box-shadow: none; }
+}
+</style>
+
+</head>
+<body>
+
+<h2 id="shopName"></h2>
+<p id="shopAddress"></p>
+
+<p>
+<b>Bill No:</b> <span id="billNo"></span><br>
+<b>Date:</b> <span id="billDate"></span>
+</p>
+
+<div style="text-align:center;">
+<input type="number" id="priceInput" placeholder="Enter amount" autofocus>
+<button onclick="addPrice()">Add</button>
+</div>
+
+<table>
+<thead>
+<tr><th>Price</th></tr>
+</thead>
+<tbody id="priceTable"></tbody>
+<tfoot>
+<tr><th>Total: ₹<span id="total">0.00</span></th></tr>
+</tfoot>
+</table>
+
+<div style="text-align:center;">
+<button onclick="printBill()">Print Receipt</button>
+<a href="bills.html"><button>Today's Bills</button></a>
+<a href="config.html"><button>Config</button></a>
+</div>
+
+<script>
+let total = 0;
+let prices = [];
+
+let billNo = Number(localStorage.getItem("billNo") || 1);
+document.getElementById("billNo").innerText = billNo;
+document.getElementById("billDate").innerText = new Date().toLocaleString();
+
+function loadConfig() {
+  document.getElementById("shopName").innerText =
+    localStorage.getItem("shopName") || "My Shop";
+  document.getElementById("shopAddress").innerText =
+    localStorage.getItem("shopAddress") || "";
+}
+loadConfig();
+
+function addPrice() {
+  const input = document.getElementById("priceInput");
+  const value = parseFloat(input.value);
+  if (isNaN(value)) return;
+
+  prices.push(value);
+  total += value;
+
+  const row = document.createElement("tr");
+  row.innerHTML = `<td>${value.toFixed(2)}</td>`;
+  document.getElementById("priceTable").appendChild(row);
+
+  document.getElementById("total").innerText = total.toFixed(2);
+  input.value = "";
+  input.focus();
+}
+
+document.getElementById("priceInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") addPrice();
+});
+
+function printBill() {
+  saveBill();
+  window.print();
+}
+
+function saveBill() {
+  const bills = JSON.parse(localStorage.getItem("bills") || "[]");
+  bills.push({
+    billNo: billNo,
+    date: new Date().toISOString(),
+    prices: prices,
+    total: total
+  });
+  localStorage.setItem("bills", JSON.stringify(bills));
+  localStorage.setItem("billNo", billNo + 1);
+}
+</script>
+
+</body>
+</html>
