@@ -9,22 +9,26 @@ body {
   background: linear-gradient(135deg, #f7f9fc, #eef3f8);
 }
 
-h2 {
+/* Header */
+.header {
   text-align: center;
+  margin-bottom: 10px;
+}
+.header h2 {
+  margin: 5px 0;
   color: #2c3e50;
 }
-
-p {
-  text-align: center;
-  color: #555;
+.header .icon {
+  font-size: 34px;
 }
 
+/* Inputs & buttons */
 input {
   font-size: 18px;
   padding: 8px;
-  border: 1px solid #bbb;
   border-radius: 6px;
-  width: 180px;
+  border: 1px solid #bbb;
+  width: 160px;
 }
 
 button {
@@ -36,55 +40,66 @@ button {
   margin: 4px;
 }
 
-/* Button colors */
+.add { background: #3498db; color: white; }
+.print { background: #27ae60; color: white; }
+.bills { background: #8e44ad; color: white; }
+.config { background: #e67e22; color: white; }
+
 button:hover { opacity: 0.9; }
 
-button:nth-of-type(1) { background: #3498db; color: #fff; } /* Add */
-button:nth-of-type(2) { background: #27ae60; color: #fff; } /* Print */
-button:nth-of-type(3) { background: #8e44ad; color: #fff; } /* Bills */
-button:nth-of-type(4) { background: #e67e22; color: #fff; } /* Config */
-
+/* Table (receipt look) */
 table {
-  width: 300px;
+  width: 280px;
   margin: 15px auto;
   border-collapse: collapse;
   background: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
 td, th {
-  border: 1px solid #ccc;
+  border: 1px solid #000;
   padding: 6px;
   text-align: center;
 }
 
 tfoot th {
-  background: #f2f6fa;
   font-weight: bold;
 }
 
-/* PRINT CLEAN */
+/* Footer */
+.footer {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #555;
+}
+
+/* THERMAL PRINT (58mm / 80mm friendly) */
 @media print {
-  body { background: white; }
+  body {
+    background: white;
+    width: 80mm;
+    margin: 0 auto;
+  }
   button, input, a { display: none; }
-  table { box-shadow: none; }
 }
 </style>
-
 </head>
 <body>
 
-<h2 id="shopName"></h2>
-<p id="shopAddress"></p>
+<div class="header">
+  <div class="icon">📚🖊️</div>
+  <h2 id="shopName"></h2>
+  <div id="shopAddress"></div>
+</div>
 
-<p>
+<p style="text-align:center;">
 <b>Bill No:</b> <span id="billNo"></span><br>
 <b>Date:</b> <span id="billDate"></span>
 </p>
 
 <div style="text-align:center;">
 <input type="number" id="priceInput" placeholder="Enter amount" autofocus>
-<button onclick="addPrice()">Add</button>
+<button class="add" onclick="addPrice()">Add</button>
 </div>
 
 <table>
@@ -93,14 +108,18 @@ tfoot th {
 </thead>
 <tbody id="priceTable"></tbody>
 <tfoot>
-<tr><th>Total: ₹<span id="total">0.00</span></th></tr>
+<tr><th>Total ₹ <span id="total">0.00</span></th></tr>
 </tfoot>
 </table>
 
 <div style="text-align:center;">
-<button onclick="printBill()">Print Receipt</button>
-<a href="bills.html"><button>Today's Bills</button></a>
-<a href="config.html"><button>Config</button></a>
+<button class="print" onclick="printBill()">Print</button>
+<a href="bills.html"><button class="bills">Today's Bills</button></a>
+<a href="config.html"><button class="config">Config</button></a>
+</div>
+
+<div class="footer">
+Thank you 🙏 — Visit again!
 </div>
 
 <script>
@@ -112,50 +131,43 @@ document.getElementById("billNo").innerText = billNo;
 document.getElementById("billDate").innerText = new Date().toLocaleString();
 
 function loadConfig() {
-  document.getElementById("shopName").innerText =
-    localStorage.getItem("shopName") || "My Shop";
-  document.getElementById("shopAddress").innerText =
-    localStorage.getItem("shopAddress") || "";
+  shopName.innerText = localStorage.getItem("shopName") || "My Stationery Shop";
+  shopAddress.innerText = localStorage.getItem("shopAddress") || "";
 }
 loadConfig();
 
 function addPrice() {
-  const input = document.getElementById("priceInput");
-  const value = parseFloat(input.value);
-  if (isNaN(value)) return;
+  const v = parseFloat(priceInput.value);
+  if (isNaN(v)) return;
+  prices.push(v);
+  total += v;
 
-  prices.push(value);
-  total += value;
+  const r = document.createElement("tr");
+  r.innerHTML = `<td>${v.toFixed(2)}</td>`;
+  priceTable.appendChild(r);
 
-  const row = document.createElement("tr");
-  row.innerHTML = `<td>${value.toFixed(2)}</td>`;
-  document.getElementById("priceTable").appendChild(row);
-
-  document.getElementById("total").innerText = total.toFixed(2);
-  input.value = "";
-  input.focus();
+  totalSpan.innerText = total.toFixed(2);
+  priceInput.value = "";
 }
 
-document.getElementById("priceInput").addEventListener("keydown", e => {
+priceInput.addEventListener("keydown", e => {
   if (e.key === "Enter") addPrice();
 });
 
 function printBill() {
-  saveBill();
-  window.print();
-}
-
-function saveBill() {
   const bills = JSON.parse(localStorage.getItem("bills") || "[]");
   bills.push({
-    billNo: billNo,
+    billNo,
     date: new Date().toISOString(),
-    prices: prices,
-    total: total
+    prices,
+    total
   });
   localStorage.setItem("bills", JSON.stringify(bills));
   localStorage.setItem("billNo", billNo + 1);
+  window.print();
 }
+
+const totalSpan = document.getElementById("total");
 </script>
 
 </body>
