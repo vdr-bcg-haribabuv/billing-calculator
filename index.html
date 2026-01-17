@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Billing Calculator</title>
-    <style>
-        body { font-family: Arial; padding: 20px; }
-        input, label { font-size: 16px; padding: 5px; }
-        button { font-size: 16px; padding: 6px 12px; }
-        table { width: 350px; margin-top: 15px; border-collapse: collapse; }
-        td, th { border: 1px solid #000; padding: 6px; text-align: right; }
-        th { text-align: center; }
+<title>Billing Calculator</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+h2, p { text-align: center; }
+input { font-size: 18px; padding: 5px; }
+button { font-size: 16px; padding: 6px 12px; }
+table { width: 300px; margin: 15px auto; border-collapse: collapse; }
+td, th { border: 1px solid #000; padding: 6px; text-align: center; }
+tfoot th { font-weight: bold; }
 
-        @media print {
-            button, input { display: none; }
-        }
-    </style>
+@media print {
+  button, input, a { display: none; }
+}
+</style>
 </head>
 <body>
 
@@ -25,64 +26,80 @@
 <b>Date:</b> <span id="billDate"></span>
 </p>
 
-<input type="number" id="priceInput" placeholder="Enter amount" autofocus />
+<div style="text-align:center;">
+<input type="number" id="priceInput" placeholder="Enter amount" autofocus>
 <button onclick="addPrice()">Add</button>
+</div>
 
 <table>
-    <thead>
-        <tr><th>Price</th></tr>
-    </thead>
-    <tbody id="priceTable"></tbody>
-    <tfoot>
-        <tr>
-            <th>Total: ₹<span id="total">0</span></th>
-        </tr>
-    </tfoot>
+<thead>
+<tr><th>Price</th></tr>
+</thead>
+<tbody id="priceTable"></tbody>
+<tfoot>
+<tr><th>Total: ₹<span id="total">0.00</span></th></tr>
+</tfoot>
 </table>
 
-<br>
-<button onclick="window.print()">Print Receipt</button>
+<div style="text-align:center;">
+<button onclick="printBill()">Print Receipt</button>
+<a href="bills.html"><button>Today's Bills</button></a>
 <a href="config.html"><button>Config</button></a>
+</div>
 
 <script>
 let total = 0;
-let billNo = localStorage.getItem("billNo") || 1;
-document.getElementById("billNo").innerText = billNo;
+let prices = [];
 
-const now = new Date();
-document.getElementById("billDate").innerText = now.toLocaleString();
+let billNo = Number(localStorage.getItem("billNo") || 1);
+document.getElementById("billNo").innerText = billNo;
+document.getElementById("billDate").innerText = new Date().toLocaleString();
 
 function loadConfig() {
-    document.getElementById("shopName").innerText =
-        localStorage.getItem("shopName") || "My Shop";
-    document.getElementById("shopAddress").innerText =
-        localStorage.getItem("shopAddress") || "";
+  document.getElementById("shopName").innerText =
+    localStorage.getItem("shopName") || "My Shop";
+  document.getElementById("shopAddress").innerText =
+    localStorage.getItem("shopAddress") || "";
 }
 loadConfig();
 
 function addPrice() {
-    const input = document.getElementById("priceInput");
-    const value = parseFloat(input.value);
-    if (isNaN(value)) return;
+  const input = document.getElementById("priceInput");
+  const value = parseFloat(input.value);
+  if (isNaN(value)) return;
 
-    total += value;
-    const row = document.createElement("tr");
-    row.innerHTML = `<td>${value.toFixed(2)}</td>`;
-    document.getElementById("priceTable").appendChild(row);
+  prices.push(value);
+  total += value;
 
-    document.getElementById("total").innerText = total.toFixed(2);
-    input.value = "";
-    input.focus();
+  const row = document.createElement("tr");
+  row.innerHTML = `<td>${value.toFixed(2)}</td>`;
+  document.getElementById("priceTable").appendChild(row);
+
+  document.getElementById("total").innerText = total.toFixed(2);
+  input.value = "";
+  input.focus();
 }
 
-document.getElementById("priceInput").addEventListener("keydown", function(e) {
-    if (e.key === "Enter") addPrice();
+document.getElementById("priceInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") addPrice();
 });
 
-window.onafterprint = () => {
-    localStorage.setItem("billNo", Number(billNo) + 1);
-    location.reload();
-};
+function printBill() {
+  saveBill();
+  window.print();
+}
+
+function saveBill() {
+  const bills = JSON.parse(localStorage.getItem("bills") || "[]");
+  bills.push({
+    billNo: billNo,
+    date: new Date().toISOString(),
+    prices: prices,
+    total: total
+  });
+  localStorage.setItem("bills", JSON.stringify(bills));
+  localStorage.setItem("billNo", billNo + 1);
+}
 </script>
 
 </body>
