@@ -82,12 +82,27 @@ tfoot th {
   }
   button, input, a { display: none; }
 }
+  /* PRINT-ONLY FOOTER */
+.print-footer {
+  display: none;
+}
+
+@media print {
+  .print-footer {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000; /* DARK & CLEAR */
+  }
+}
+
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="icon">📚🖊️</div>
   <h2 id="shopName"></h2>
   <div id="shopAddress"></div>
 </div>
@@ -118,9 +133,6 @@ tfoot th {
 <a href="config.html"><button class="config">Config</button></a>
 </div>
 
-<div class="footer">
-Thank you 🙏 — Visit again!
-</div>
 
 <script>
 let total = 0;
@@ -169,6 +181,9 @@ function printBill() {
 
 const totalSpan = document.getElementById("total");
 </script>
+<div class="print-footer">
+  Thank you — Visit again!
+</div>
 
 </body>
 </html>
