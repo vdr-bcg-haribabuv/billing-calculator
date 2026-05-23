@@ -90,6 +90,7 @@ font-weight:900;
 tfoot th{
 font-size:18px;
 padding:5px;
+font-weight:900;
 }
 
 .action-col{
@@ -100,6 +101,10 @@ width:90px;
 display:none;
 }
 
+.hide-print{
+display:none !important;
+}
+
 @media print{
 
 body{
@@ -107,6 +112,7 @@ background:white;
 margin:0;
 padding:0;
 width:72mm;
+font-family:Arial,sans-serif;
 }
 
 .top,
@@ -118,39 +124,39 @@ display:none !important;
 }
 
 .shop-title{
-font-size:20px;
+font-size:18px;
 font-weight:900;
 }
 
 .shop-address{
-font-size:12px;
-line-height:15px;
+font-size:11px;
+line-height:14px;
 font-weight:800;
 }
 
 .bill-info{
-font-size:13px;
-line-height:18px;
+font-size:12px;
+line-height:17px;
 font-weight:900;
 }
 
 th,td{
-padding:3px;
-font-size:14px;
+padding:2px;
+font-size:13px;
 font-weight:900;
 }
 
 tfoot th{
-font-size:18px;
+font-size:17px;
 font-weight:900;
-padding:5px;
+padding:4px;
 }
 
 .print-footer{
 display:block;
 text-align:center;
-margin-top:8px;
-font-size:13px;
+margin-top:7px;
+font-size:12px;
 font-weight:900;
 }
 
@@ -399,6 +405,18 @@ qty.focus();
 
 });
 
+qty.addEventListener("focus",()=>{
+
+qty.select();
+
+});
+
+qty.addEventListener("click",()=>{
+
+qty.select();
+
+});
+
 qty.addEventListener("keydown",e=>{
 
 if(e.key==="Enter"){
@@ -464,7 +482,7 @@ ${item.qty}
 <td class="${hasDiscount ? '' : 'hide-print'}"
 ondblclick="editCell(${index},'disc')">
 
-${item.disc}
+${item.disc > 0 ? item.disc : ''}
 
 </td>
 
