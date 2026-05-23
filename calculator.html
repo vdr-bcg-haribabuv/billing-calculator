@@ -4,511 +4,484 @@
 <head>
   <title>Calculator Billing</title>
 
-  <style>
+<style>
 
-    body{
-      font-family:Arial, sans-serif;
-      background:#f4f6f8;
-      padding:10px;
-    }
+body{
+  font-family:Arial,sans-serif;
+  background:#f4f6f8;
+  padding:10px;
+}
 
-    .screen-container{
-      max-width:700px;
-      margin:auto;
-    }
+.screen-container{
+  max-width:700px;
+  margin:auto;
+}
 
-    .receipt-header{
-      text-align:center;
-      margin-bottom:5px;
-    }
+.receipt-header{
+  text-align:center;
+  margin-bottom:5px;
+}
 
-    .shop-title{
-      font-size:20px;
-      font-weight:bold;
-      color:#000;
-      margin-bottom:2px;
-    }
+.shop-title{
+  font-size:20px;
+  font-weight:bold;
+  color:#000;
+  margin-bottom:2px;
+}
 
-    .shop-address{
-      font-size:11px;
-      line-height:14px;
-      margin-bottom:6px;
-    }
+.shop-address{
+  font-size:11px;
+  line-height:14px;
+  margin-bottom:5px;
+}
 
-    .bill-info{
-      font-size:11px;
-      line-height:16px;
-      margin-bottom:8px;
-      text-align:left;
-    }
+.bill-info{
+  font-size:11px;
+  line-height:15px;
+  margin-bottom:6px;
+  font-weight:bold;
+}
 
-    .top{
-      text-align:center;
-      margin-bottom:10px;
-    }
+.top{
+  text-align:center;
+  margin-bottom:10px;
+}
 
-    input{
-      width:90px;
-      padding:5px;
-      font-size:14px;
-      border:1px solid #bbb;
-      border-radius:4px;
-    }
+input{
+  width:75px;
+  padding:4px;
+  font-size:13px;
+  border:1px solid #bbb;
+  border-radius:4px;
+}
 
-    button{
-      padding:5px 10px;
-      border:none;
-      border-radius:4px;
-      cursor:pointer;
-      color:white;
-      font-size:13px;
-      margin:2px;
-    }
+button{
+  padding:5px 10px;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  color:white;
+  font-size:12px;
+  margin:2px;
+}
 
-    .add{
-      background:#3498db;
-    }
+.add{ background:#3498db; }
+.print{ background:#27ae60; }
+.clear{ background:#e67e22; }
+.back{ background:#8e44ad; }
+.remove{ background:#e74c3c; }
 
-    .print{
-      background:#27ae60;
-    }
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+}
 
-    .clear{
-      background:#e67e22;
-    }
+th,td{
+  border:1px solid #000;
+  padding:2px;
+  text-align:center;
+  font-size:12px;
+  font-weight:bold;
+}
 
-    .back{
-      background:#8e44ad;
-    }
+tfoot th{
+  font-size:13px;
+  padding:4px;
+}
 
-    .remove{
-      background:#e74c3c;
-    }
+.action-col{
+  width:70px;
+}
 
-    button:hover{
-      opacity:0.9;
-    }
+.print-footer{
+  display:none;
+}
 
-    table{
-      width:100%;
-      border-collapse:collapse;
-      background:white;
-    }
+@media print{
 
-    th, td{
-      border:1px solid #000;
-      padding:3px;
-      text-align:center;
-      font-size:12px;
-    }
+  body{
+    background:white;
+    margin:0;
+    padding:0;
+    width:72mm;
+    font-size:11px;
+  }
 
-    tfoot th{
-      font-size:13px;
-      padding:4px;
-    }
+  .top,
+  .action-col,
+  .remove-btn,
+  button,
+  a{
+    display:none !important;
+  }
 
-    .print-footer{
-      display:none;
-    }
+  .screen-container{
+    width:100%;
+    margin:0;
+    padding:0;
+  }
 
-    /* PRINT */
+  .shop-title{
+    font-size:16px;
+  }
 
-    @media print{
+  .shop-address{
+    font-size:10px;
+    line-height:12px;
+  }
 
-      body{
-        background:white;
-        margin:0;
-        padding:0;
-        width:72mm;
-        font-size:11px;
-      }
+  .bill-info{
+    font-size:10px;
+    line-height:13px;
+  }
 
-      .top,
-      button,
-      a,
-      .remove{
-        display:none !important;
-      }
+  th,td{
+    padding:1px;
+    font-size:10px;
+    font-weight:bold;
+  }
 
-      .screen-container{
-        width:100%;
-        margin:0;
-        padding:0;
-      }
-      .screen-only{
-        display:none;
-      }
+  .print-footer{
+    display:block;
+    text-align:center;
+    margin-top:5px;
+    font-size:10px;
+    font-weight:bold;
+  }
 
-      .shop-title{
-        font-size:16px;
-        font-weight:bold;
-        text-align:center;
-      }
+}
 
-      .shop-address{
-        font-size:10px;
-        text-align:center;
-        line-height:12px;
-        margin-bottom:5px;
-      }
-
-      .bill-info{
-        font-size:10px;
-        line-height:14px;
-        margin-bottom:5px;
-      }
-
-      table{
-        width:100%;
-      }
-
-      th, td{
-        padding:2px;
-        font-size:10px;
-      }
-
-      tfoot th{
-        font-size:12px;
-      }
-
-      .print-footer{
-        display:block;
-        text-align:center;
-        margin-top:6px;
-        font-size:10px;
-        font-weight:bold;
-      }
-
-    }
-
-  </style>
+</style>
 
 </head>
 
 <body>
 
-  <div class="screen-container">
+<div class="screen-container">
 
-    <div class="receipt-header">
+<div class="receipt-header">
 
-      <div class="shop-title"
-        id="shopName">
-      </div>
+<div class="shop-title"
+id="shopName"></div>
 
-      <div class="shop-address"
-        id="shopAddress">
-      </div>
+<div class="shop-address"
+id="shopAddress"></div>
 
-    </div>
+</div>
 
-    <div class="bill-info">
+<div class="bill-info">
 
-      Bill No :
-      <span id="billNo"></span>
+Bill No :
+<span id="billNo"></span>
 
-      <br>
+<br>
 
-      Date :
-      <span id="billDate"></span>
+Date :
+<span id="billDate"></span>
 
-    </div>
+</div>
 
-    <div class="top">
+<div class="top">
 
-      <input type="number"
-        id="price"
-        placeholder="Price">
+<input type="number"
+id="price"
+placeholder="Price">
 
-      <input type="number"
-        id="qty"
-        placeholder="Qty">
+<input type="number"
+id="qty"
+placeholder="Qty">
 
-      <button class="add"
-        onclick="addItem()">
-        Add
-      </button>
+<input type="number"
+id="disc"
+placeholder="Disc %">
 
-      <button class="clear"
-        onclick="clearBill()">
-        New Bill
-      </button>
+<button class="add"
+onclick="addItem()">
+Add
+</button>
 
-      <a href="index.html">
-        <button class="back">
-          Addition (+)
-        </button>
-      </a>
+<button class="clear"
+onclick="clearBill()">
+New Bill
+</button>
 
-    </div>
+<a href="index.html">
+<button class="back">
+Addition (+)
+</button>
+</a>
 
-    <table>
+</div>
 
-      <thead>
+<table>
 
-        <tr>
-          <th>Price</th>
-          <th>Qty</th>
-          <th>Total</th>
-        </tr>
+<thead>
 
-      </thead>
+<tr>
+<th>Price</th>
+<th>Qty</th>
+<th>Disc%</th>
+<th>Total</th>
+<th class="action-col">Action</th>
+</tr>
 
-      <tbody id="rows"></tbody>
+</thead>
 
-      <tfoot>
+<tbody id="rows"></tbody>
 
-        <tr>
+<tfoot>
 
-          <th colspan="3">
+<tr>
 
-            Grand Total : ₹
-            <span id="grand">
-              0.00
-            </span>
+<th colspan="5">
 
-          </th>
+Grand Total : ₹
+<span id="grand">
+0.00
+</span>
 
-        </tr>
+</th>
 
-      </tfoot>
+</tr>
 
-    </table>
+</tfoot>
 
-    <br>
+</table>
 
-    <div style="text-align:center;">
+<br>
 
-      <button class="print"
-        onclick="printBill()">
-        Print
-      </button>
+<div style="text-align:center;">
 
-      <a href="bills.html">
+<button class="print"
+onclick="printBill()">
+Print
+</button>
 
-        <button class="back">
-          Today's Bills
-        </button>
+<a href="bills.html">
+<button class="back">
+Today's Bills
+</button>
+</a>
 
-      </a>
+<a href="config.html">
+<button class="back">
+Config
+</button>
+</a>
 
-      <a href="config.html">
+</div>
 
-        <button class="back">
-          Config
-        </button>
+<div class="print-footer">
+Thank you - Visit again!
+</div>
 
-      </a>
+</div>
 
-    </div>
+<script>
 
-    <div class="print-footer">
-      Thank you - Visit again!
-    </div>
+let items=[];
 
-  </div>
+let billNo=
+Number(localStorage.getItem("billNo")||1);
 
-  <script>
+billNoSpan=document.getElementById("billNo");
+billDateSpan=document.getElementById("billDate");
 
-    let items = [];
+billNoSpan.innerText=billNo;
 
-    let billNo =
-      Number(localStorage.getItem("billNo") || 1);
+billDateSpan.innerText=
+new Date().toLocaleString();
 
-    document.getElementById("billNo").innerText =
-      billNo;
+function loadConfig(){
 
-    document.getElementById("billDate").innerText =
-      new Date().toLocaleString();
+shopName.innerText=
+localStorage.getItem("shopName")
+||"My Shop";
 
-    function loadConfig(){
+shopAddress.innerText=
+localStorage.getItem("shopAddress")
+||"";
 
-      shopName.innerText =
-        localStorage.getItem("shopName")
-        || "My Shop";
+}
 
-      shopAddress.innerText =
-        localStorage.getItem("shopAddress")
-        || "";
+loadConfig();
 
-    }
+price.focus();
 
-    loadConfig();
+price.addEventListener("keydown",e=>{
+if(e.key==="Enter"){
+qty.focus();
+}
+});
 
-    price.focus();
+qty.addEventListener("keydown",e=>{
+if(e.key==="Enter"){
+disc.focus();
+}
+});
 
-    /* ENTER FLOW */
+disc.addEventListener("keydown",e=>{
+if(e.key==="Enter"){
+addItem();
+}
+});
 
-    price.addEventListener("keydown", e => {
+function addItem(){
 
-      if(e.key === "Enter"){
-        qty.focus();
-      }
+const p=parseFloat(price.value);
+const q=parseFloat(qty.value);
+const d=parseFloat(disc.value)||0;
 
-    });
+if(isNaN(p)||isNaN(q)) return;
 
-    qty.addEventListener("keydown", e => {
+items.push({
+price:p,
+qty:q,
+disc:d
+});
 
-      if(e.key === "Enter"){
-        addItem();
-      }
+render();
 
-    });
+price.value="";
+qty.value="";
+disc.value="";
 
-    /* ADD ITEM */
+price.focus();
 
-    function addItem(){
+}
 
-      const p =
-        parseFloat(price.value);
+function render(){
 
-      const q =
-        parseFloat(qty.value);
+rows.innerHTML="";
 
-      if(isNaN(p) || isNaN(q))
-        return;
+let total=0;
 
-      items.push({
-        price:p,
-        qty:q
-      });
+items.forEach((item,index)=>{
 
-      render();
+const base=item.price*item.qty;
 
-      price.value = "";
-      qty.value = "";
+const final=
+base-(base*item.disc/100);
 
-      price.focus();
+total+=final;
 
-    }
+const tr=
+document.createElement("tr");
 
-    /* RENDER */
+tr.innerHTML=`
 
-    function render(){
+<td ondblclick="editCell(${index},'price')">
+${item.price.toFixed(2)}
+</td>
 
-      rows.innerHTML = "";
+<td ondblclick="editCell(${index},'qty')">
+${item.qty}
+</td>
 
-      let total = 0;
+<td ondblclick="editCell(${index},'disc')">
+${item.disc}
+</td>
 
-      items.forEach((item,index)=>{
+<td>
+${final.toFixed(2)}
+</td>
 
-        const rowTotal =
-          item.price * item.qty;
+<td class="action-col remove-btn">
 
-        total += rowTotal;
+<button class="remove"
+onclick="removeItem(${index})">
 
-        const tr =
-          document.createElement("tr");
+Remove
 
-        tr.innerHTML = `
+</button>
 
-          <td ondblclick="editCell(${index},'price')">
-            ${item.price.toFixed(2)}
-          </td>
+</td>
+`;
 
-          <td ondblclick="editCell(${index},'qty')">
-            ${item.qty}
-          </td>
+rows.appendChild(tr);
 
-          <td>
-            ${rowTotal.toFixed(2)}
-          </td>
-          <td class="screen-only">
+});
 
-              <button class="remove" onclick="removeItem(${index})"> Remove</button>
-          </td>
-          `;
+grand.innerText=
+total.toFixed(2);
 
-        rows.appendChild(tr);
+}
 
-      });
+function removeItem(index){
 
-      grand.innerText =
-        total.toFixed(2);
+items.splice(index,1);
 
-    }
+render();
 
-    /* REMOVE */
+}
 
-    function removeItem(index){
+function editCell(index,key){
 
-      items.splice(index,1);
+const val=prompt(
+"Edit "+key,
+items[index][key]
+);
 
-      render();
+if(val===null) return;
 
-    }
+items[index][key]=
+parseFloat(val);
 
-    /* EDIT */
+render();
 
-    function editCell(index,key){
+}
 
-      const val = prompt(
-        "Edit " + key,
-        items[index][key]
-      );
+function clearBill(){
 
-      if(val === null)
-        return;
+items=[];
 
-      items[index][key] =
-        parseFloat(val);
+render();
 
-      render();
+}
 
-    }
+function printBill(){
 
-    /* CLEAR */
+let total=0;
 
-    function clearBill(){
+items.forEach(i=>{
 
-      items = [];
+const base=i.price*i.qty;
 
-      render();
+total+=
+base-(base*i.disc/100);
 
-    }
+});
 
-    /* PRINT */
+const bills=JSON.parse(
+localStorage.getItem("bills")||"[]"
+);
 
-    function printBill(){
+bills.push({
 
-      let total = 0;
+billNo,
 
-      items.forEach(i=>{
+date:new Date().toISOString(),
 
-        total +=
-          i.price * i.qty;
+total
 
-      });
+});
 
-      const bills = JSON.parse(
-        localStorage.getItem("bills") || "[]"
-      );
+localStorage.setItem(
+"bills",
+JSON.stringify(bills)
+);
 
-      bills.push({
+localStorage.setItem(
+"billNo",
+billNo+1
+);
 
-        billNo,
+window.print();
 
-        date:
-          new Date().toISOString(),
+}
 
-        total
-
-      });
-
-      localStorage.setItem(
-        "bills",
-        JSON.stringify(bills)
-      );
-
-      localStorage.setItem(
-        "billNo",
-        billNo + 1
-      );
-
-      window.print();
-
-    }
-
-  </script>
+</script>
 
 </body>
 
