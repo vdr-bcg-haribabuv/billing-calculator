@@ -232,7 +232,7 @@ Print
 
 <a href="bills.html">
 <button class="back">
-Today's Bills
+Bill History
 </button>
 </a>
 
@@ -256,12 +256,13 @@ let total=0;
 
 let prices=[];
 
-let billNo=
+let billNoValue=
 Number(localStorage.getItem("billNo")||1);
 
-billNo.innerText=billNo;
+document.getElementById("billNo").innerText=
+billNoValue;
 
-billDate.innerText=
+document.getElementById("billDate").innerText=
 new Date().toLocaleString();
 
 function loadConfig(){
@@ -343,11 +344,15 @@ localStorage.getItem("bills")||"[]"
 
 bills.push({
 
-billNo,
+type:"addition",
+
+billNo:billNoValue,
 
 date:new Date().toISOString(),
 
-total
+prices:[...prices],
+
+total:total
 
 });
 
@@ -358,10 +363,75 @@ JSON.stringify(bills)
 
 localStorage.setItem(
 "billNo",
-billNo+1
+billNoValue+1
 );
 
 window.print();
+
+}
+
+const params =
+new URLSearchParams(window.location.search);
+
+if(params.get("view")==="1"){
+
+const index =
+localStorage.getItem("viewBillIndex");
+
+const bills =
+JSON.parse(
+localStorage.getItem("bills") || "[]"
+);
+
+const bill = bills[index];
+
+if(bill){
+
+clearBill();
+
+prices = [...bill.prices];
+
+total = bill.total;
+
+priceTable.innerHTML = "";
+
+prices.forEach(v=>{
+
+const row =
+document.createElement("tr");
+
+row.innerHTML = `
+<td>
+${v.toFixed(2)}
+</td>
+`;
+
+priceTable.appendChild(row);
+
+});
+
+document.getElementById("total")
+.innerText =
+total.toFixed(2);
+
+document.getElementById("billNo")
+.innerText =
+bill.billNo;
+
+document.getElementById("billDate")
+.innerText =
+new Date(bill.date)
+.toLocaleString();
+
+if(params.get("print")==="1"){
+
+setTimeout(()=>{
+window.print();
+},500);
+
+}
+
+}
 
 }
 
