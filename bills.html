@@ -1,68 +1,358 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Today's Bills</title>
+
+<title>Bill History</title>
+
 <style>
-body {
-  font-family: Arial;
-  padding: 20px;
-  background: linear-gradient(135deg, #f7f9fc, #eef3f8);
+
+body{
+font-family:Arial,sans-serif;
+background:#f4f6f8;
+padding:10px;
 }
 
-h2 {
-  text-align: center;
-  color: #2c3e50;
+.container{
+max-width:900px;
+margin:auto;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
+h2{
+text-align:center;
+margin-bottom:10px;
+color:#2c3e50;
 }
 
-th, td {
-  border: 1px solid #000;
-  padding: 6px;
-  text-align: center;
+.top{
+text-align:center;
+margin-bottom:12px;
 }
 
-th {
-  background: #f2f6fa;
+input{
+padding:6px;
+width:180px;
+font-size:14px;
+border:1px solid #bbb;
+border-radius:4px;
 }
 
-.total-box {
-  margin-top: 10px;
-  text-align: right;
-  font-size: 18px;
-  font-weight: bold;
+button{
+padding:6px 10px;
+border:none;
+border-radius:4px;
+cursor:pointer;
+color:white;
+font-size:12px;
+margin:2px;
 }
 
-button {
-  padding: 6px 10px;
-  border: none;
-  border-radius: 6px;
-  background: #3498db;
-  color: white;
-  cursor: pointer;
+.search{
+background:#3498db;
 }
+
+.view{
+background:#27ae60;
+}
+
+.print{
+background:#8e44ad;
+}
+
+.back{
+background:#e67e22;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+}
+
+th,td{
+border:1px solid #000;
+padding:4px;
+text-align:center;
+font-size:12px;
+font-weight:bold;
+}
+
+th{
+background:#f0f2f5;
+}
+
+.total-box{
+margin-top:10px;
+text-align:right;
+font-size:16px;
+font-weight:bold;
+}
+
+.empty{
+text-align:center;
+padding:20px;
+font-weight:bold;
+color:#888;
+}
+
 </style>
+
 </head>
+
 <body>
 
-<h2>📊 Today's Bills</h2>
+<div class="container">
+
+<h2>Bill History</h2>
+
+<div class="top">
+
+<input type="number"
+id="searchBill"
+placeholder="Search Bill No">
+
+<button class="search"
+onclick="searchBills()">
+Search
+</button>
+
+<button class="search"
+onclick="loadBills()">
+Show All
+</button>
+
+</div>
 
 <table>
+
 <thead>
+
 <tr>
 <th>Bill No</th>
 <th>Date & Time</th>
 <th>Total</th>
-<th>Action</th>
+<th>Actions</th>
 </tr>
+
 </thead>
+
 <tbody id="rows"></tbody>
+
 </table>
 
 <div class="total-box">
-Daily Total: ₹ <span id="dayTotal">0.00</span>
-</di
+
+Overall Total : ₹
+<span id="overallTotal">
+0.00
+</span>
+
+</div>
+
+<br>
+
+<div style="text-align:center;">
+
+<a href="index.html">
+
+<button class="back">
+Addition (+)
+</button>
+
+</a>
+
+<a href="calculator.html">
+
+<button class="back">
+Calculator
+</button>
+
+</a>
+
+<a href="config.html">
+
+<button class="back">
+Config
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+let bills =
+JSON.parse(
+localStorage.getItem("bills") || "[]"
+);
+
+function loadBills(filteredBills = null){
+
+const data =
+filteredBills || bills;
+
+rows.innerHTML = "";
+
+let grand = 0;
+
+if(data.length === 0){
+
+rows.innerHTML = `
+<tr>
+<td colspan="4"
+class="empty">
+
+No bills found
+
+</td>
+</tr>
+`;
+
+overallTotal.innerText = "0.00";
+
+return;
+
+}
+
+data.forEach((bill,index)=>{
+
+grand += Number(bill.total);
+
+const tr =
+document.createElement("tr");
+
+tr.innerHTML = `
+
+<td>
+${bill.billNo}
+</td>
+
+<td>
+${new Date(bill.date)
+.toLocaleString()}
+</td>
+
+<td>
+₹${Number(bill.total)
+.toFixed(2)}
+</td>
+
+<td>
+
+<button class="view"
+onclick="viewBill(${index})">
+
+View
+
+</button>
+
+<button class="print"
+onclick="reprintBill(${index})">
+
+Re-print
+
+</button>
+
+</td>
+
+`;
+
+rows.appendChild(tr);
+
+});
+
+overallTotal.innerText =
+grand.toFixed(2);
+
+}
+
+/* SEARCH */
+
+function searchBills(){
+
+const billNo =
+searchBill.value.trim();
+
+if(!billNo){
+
+loadBills();
+
+return;
+
+}
+
+const filtered =
+bills.filter(b =>
+String(b.billNo)
+.includes(billNo)
+);
+
+loadBills(filtered);
+
+}
+
+/* VIEW BILL */
+
+function viewBill(index){
+
+localStorage.setItem(
+"viewBillIndex",
+index
+);
+
+const bill = bills[index];
+
+if(bill.items){
+
+window.location.href =
+"calculator.html?view=1";
+
+}else{
+
+window.location.href =
+"index.html?view=1";
+
+}
+
+}
+
+/* REPRINT */
+
+function reprintBill(index){
+
+localStorage.setItem(
+"viewBillIndex",
+index
+);
+
+const bill = bills[index];
+
+if(bill.items){
+
+window.open(
+"calculator.html?view=1&print=1",
+"_blank"
+);
+
+}else{
+
+window.open(
+"index.html?view=1&print=1",
+"_blank"
+);
+
+}
+
+}
+
+/* INITIAL LOAD */
+
+loadBills();
+
+</script>
+
+</body>
+
+</html>
