@@ -148,7 +148,7 @@ font-weight:bold;
 }
 
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/qz-tray/qz-tray.js"></script>
 </head>
 
 <body>
@@ -417,7 +417,7 @@ document.getElementById("billNo")
 
 }
 
-function printBill(){
+async function printBill(){
 
 const bills=JSON.parse(
 localStorage.getItem("bills")||"[]"
@@ -428,12 +428,7 @@ bills.some(b =>
 b.billNo === billNoValue
 );
 
-if(alreadyExists){
-
-window.print();
-return;
-
-}
+if(!alreadyExists){
 
 bills.push({
 
@@ -452,7 +447,70 @@ localStorage.setItem(
 JSON.stringify(bills)
 );
 
-window.print();
+}
+
+let receipt = "";
+
+receipt += shopName.innerText + "\n";
+
+receipt += shopAddress.innerText + "\n\n";
+
+receipt +=
+"Bill No : " + billNoValue + "\n";
+
+receipt +=
+"Date : " +
+formatDate(new Date()) +
+"\n";
+
+receipt +=
+"-----------------------------\n";
+
+prices.forEach(v=>{
+
+receipt +=
+v.toFixed(2) + "\n";
+
+});
+
+receipt +=
+"-----------------------------\n";
+
+receipt +=
+"TOTAL : ₹" +
+total.toFixed(2) +
+"\n\n";
+
+receipt +=
+"Thank you - Visit again!\n";
+
+try{
+
+await qz.websocket.connect();
+
+const printer =
+await qz.printers.getDefault();
+
+const config =
+qz.configs.create(printer);
+
+await qz.print(config,[{
+type:'raw',
+format:'plain',
+data:receipt
+}]);
+
+qz.websocket.disconnect();
+
+clearBill();
+
+}catch(err){
+
+alert(
+"Printing failed : " + err
+);
+
+}
 
 }
 
