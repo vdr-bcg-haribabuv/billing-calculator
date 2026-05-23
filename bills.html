@@ -18,13 +18,22 @@ max-width:950px;
 margin:auto;
 }
 
+.top-nav{
+text-align:center;
+margin-bottom:12px;
+}
+
+.top-nav button{
+background:#34495e;
+}
+
 h2{
 text-align:center;
 margin-bottom:10px;
 color:#2c3e50;
 }
 
-.top{
+.filters{
 text-align:center;
 margin-bottom:12px;
 }
@@ -61,10 +70,6 @@ background:#8e44ad;
 
 .print{
 background:#e67e22;
-}
-
-.back{
-background:#34495e;
 }
 
 .clear{
@@ -111,9 +116,25 @@ color:#888;
 
 <div class="container">
 
+<div class="top-nav">
+
+<a href="index.html">
+<button>Addition (+)</button>
+</a>
+
+<a href="calculator.html">
+<button>Calculator</button>
+</a>
+
+<a href="config.html">
+<button>Config</button>
+</a>
+
+</div>
+
 <h2>Bill History</h2>
 
-<div class="top">
+<div class="filters">
 
 <input type="number"
 id="searchBill"
@@ -152,8 +173,6 @@ Clear History
 
 <th>Bill No</th>
 
-<th>Type</th>
-
 <th>Date & Time</th>
 
 <th>Total</th>
@@ -177,36 +196,6 @@ Total : ₹
 
 </div>
 
-<br>
-
-<div style="text-align:center;">
-
-<a href="index.html">
-
-<button class="back">
-Addition (+)
-</button>
-
-</a>
-
-<a href="calculator.html">
-
-<button class="back">
-Calculator
-</button>
-
-</a>
-
-<a href="config.html">
-
-<button class="back">
-Config
-</button>
-
-</a>
-
-</div>
-
 </div>
 
 <script>
@@ -215,6 +204,27 @@ const bills =
 JSON.parse(
 localStorage.getItem("bills") || "[]"
 );
+
+/* REMOVE DUPLICATES */
+
+const uniqueBills = [];
+
+const seen = new Set();
+
+bills.forEach(b=>{
+
+const key =
+b.billNo + "_" + b.total;
+
+if(!seen.has(key)){
+
+seen.add(key);
+
+uniqueBills.push(b);
+
+}
+
+});
 
 /* LOAD TABLE */
 
@@ -230,7 +240,7 @@ rows.innerHTML=`
 
 <tr>
 
-<td colspan="5"
+<td colspan="4"
 class="empty">
 
 No Bills Found
@@ -258,10 +268,6 @@ tr.innerHTML=`
 
 <td>
 ${bill.billNo}
-</td>
-
-<td>
-${bill.type}
 </td>
 
 <td>
@@ -313,7 +319,7 @@ searchBill.value.trim();
 const dt =
 searchDate.value;
 
-let filtered = bills;
+let filtered = uniqueBills;
 
 if(no){
 
@@ -348,7 +354,7 @@ new Date()
 .split("T")[0];
 
 const filtered =
-bills.filter(b=>
+uniqueBills.filter(b=>
 b.date.startsWith(today)
 );
 
@@ -366,9 +372,9 @@ index
 );
 
 const bill =
-bills[index];
+uniqueBills[index];
 
-if(bill.type==="calculator"){
+if(bill.items){
 
 window.location.href =
 "calculator.html?view=1";
@@ -392,9 +398,9 @@ index
 );
 
 const bill =
-bills[index];
+uniqueBills[index];
 
-if(bill.type==="calculator"){
+if(bill.items){
 
 window.open(
 "calculator.html?view=1&print=1",
@@ -432,7 +438,7 @@ location.reload();
 
 /* INITIAL LOAD */
 
-loadBills(bills);
+loadBills(uniqueBills);
 
 </script>
 
