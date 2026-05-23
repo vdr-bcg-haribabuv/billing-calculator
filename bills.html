@@ -225,6 +225,42 @@ uniqueBills.push(b);
 }
 
 });
+function formatDate(date){
+
+const d = new Date(date);
+
+const dd =
+String(d.getDate())
+.padStart(2,"0");
+
+const mm =
+String(d.getMonth()+1)
+.padStart(2,"0");
+
+const yyyy =
+d.getFullYear();
+
+let hh =
+d.getHours();
+
+const min =
+String(d.getMinutes())
+.padStart(2,"0");
+
+const ampm =
+hh >= 12 ? "PM" : "AM";
+
+hh = hh % 12;
+
+hh = hh ? hh : 12;
+
+hh =
+String(hh)
+.padStart(2,"0");
+
+return `${dd}/${mm}/${yyyy} ${hh}:${min} ${ampm}`;
+
+}
 
 /* LOAD TABLE */
 
@@ -271,8 +307,7 @@ ${bill.billNo}
 </td>
 
 <td>
-${new Date(bill.date)
-.toLocaleString()}
+${formatDate(bill.date)}
 </td>
 
 <td>
