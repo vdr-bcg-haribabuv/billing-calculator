@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Calculator Billing</title>
+
+<style>
+body {
+  font-family: Arial;
+  padding: 20px;
+  background: linear-gradient(135deg,#f7f9fc,#eef3f8);
+}
+
+h2 {
+  text-align: center;
+  color: #2c3e50;
+}
+
+.top {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+input {
+  padding: 8px;
+  width: 120px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+}
+
+.add { background:#3498db; }
+.print { background:#27ae60; }
+.clear { background:#e67e22; }
+.back { background:#8e44ad; }
+.remove { background:#e74c3c; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th, td {
+  border: 1px solid #000;
+  padding: 6px;
+  text-align: center;
+}
+
+tfoot th {
+  font-size: 18px;
+}
+
+@media print {
+  body {
+    background:white;
+    width:80mm;
+  }
+
+  button, input, a {
+    display:none;
+  }
+
+  .print-footer {
+    display:block;
+    text-align:center;
+    margin-top:10px;
+    font-weight:bold;
+  }
+}
+
+.print-footer {
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Calculator</h2>
+
+<div class="top">
+  <input type="number" id="price" placeholder="Price">
+  <input type="number" id="qty" placeholder="Qty">
+
+  <button class="add" onclick="addItem()">Add</button>
+  <button class="clear" onclick="clearBill()">New Bill</button>
+
+  <a href="index.html">
+    <button class="back">Addition (+)</button>
+  </a>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Price</th>
+<th>Qty</th>
+<th>Total</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="rows"></tbody>
+
+<tfoot>
+<tr>
+<th colspan="4">
+Grand Total: ₹ <span id="grand">0.00</span>
+</th>
+</tr>
+</tfoot>
+
+</table>
+
+<br>
+
+<div style="text-align:center;">
+<button class="print" onclick="printBill()">Print</button>
+
+<a href="bills.html">
+<button class="back">Today's Bills</button>
+</a>
+</div>
+
+<div class="print-footer">
+Thank you — Visit again!
+</div>
+
+<script>
+
+let items = [];
+
+let billNo = Number(localStorage.getItem("billNo") || 1);
+
+price.focus();
+
+/* ENTER FLOW */
+
+price.addEventListener("keydown", e => {
+  if(e.key === "Enter") {
+    qty.focus();
+  }
+});
+
+qty.addEventListener("keydown", e => {
+  if(e.key === "Enter") {
+    addItem();
+  }
+});
+
+/* ADD ITEM */
+
+function addItem() {
+
+  const p = parseFloat(price.value);
+  const q = parseFloat(qty.value);
+
+  if(isNaN(p) || isNaN(q)) return;
+
+  items.push({
+    price:p,
+    qty:q
+  });
+
+  render();
+
+  price.value = "";
+  qty.value = "";
+
+  price.focus();
+}
+
+/* RENDER */
+
+function render() {
+
+  rows.innerHTML = "";
+
+  let total = 0;
+
+  items.forEach((item,index) => {
+
+    const rowTotal = item.price * item.qty;
+
+    total += rowTotal;
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td ondblclick="editCell(${index},'price')">
+        ${item.price.toFixed(2)}
+      </td>
+
+      <td ondblclick="editCell(${index},'qty')">
+        ${item.qty}
+      </td>
+
+      <td>
+        ${rowTotal.toFixed(2)}
+      </td>
+
+      <td>
+        <button class="remove"
+          onclick="removeItem(${index})">
+          Remove
+        </button>
+      </td>
+    `;
+
+    rows.appendChild(tr);
+
+  });
+
+  grand.innerText = total.toFixed(2);
+}
+
+/* REMOVE */
+
+function removeItem(index) {
+  items.splice(index,1);
+  render();
+}
+
+/* EDIT */
+
+function editCell(index,key) {
+
+  const val = prompt(
+    "Edit " + key,
+    items[index][key]
+  );
+
+  if(val === null) return;
+
+  items[index][key] = parseFloat(val);
+
+  render();
+}
+
+/* CLEAR */
+
+function clearBill() {
+  items = [];
+  render();
+}
+
+/* PRINT */
+
+function printBill() {
+
+  let total = 0;
+
+  items.forEach(i => {
+    total += i.price * i.qty;
+  });
+
+  const bills = JSON.parse(
+    localStorage.getItem("bills") || "[]"
+  );
+
+  bills.push({
+    billNo,
+    date:new Date().toISOString(),
+    total
+  });
+
+  localStorage.setItem(
+    "bills",
+    JSON.stringify(bills)
+  );
+
+  localStorage.setItem(
+    "billNo",
+    billNo + 1
+  );
+
+  window.print();
+}
+
+</script>
+
+</body>
+</html>
