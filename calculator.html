@@ -155,7 +155,7 @@ font-weight:bold;
 }
 
 </style>
-<script src="https://cdn.jsdelivr.net/npm/qz-tray/qz-tray.js"></script>
+
 </head>
 
 <body>
@@ -525,13 +525,13 @@ document.getElementById("billNo")
 
 }
 
-async function printBill(){
+function printBill(){
 
 let total=0;
 
 items.forEach(i=>{
 
-const base =
+const base=
 i.price*i.qty;
 
 total +=
@@ -569,83 +569,7 @@ JSON.stringify(bills)
 
 }
 
-let receipt = "";
-
-receipt +=
-shopName.innerText + "\n";
-
-receipt +=
-shopAddress.innerText + "\n\n";
-
-receipt +=
-"Bill No : " +
-billNoValue + "\n";
-
-receipt +=
-"Date : " +
-formatDate(new Date()) +
-"\n";
-
-receipt +=
-"--------------------------------\n";
-
-receipt +=
-"Price Qty Disc Total\n";
-
-receipt +=
-"--------------------------------\n";
-
-items.forEach(i=>{
-
-const base =
-i.price*i.qty;
-
-const final =
-base-(base*i.disc/100);
-
-receipt +=
-`${i.price}  ${i.qty}  ${i.disc}%  ${final.toFixed(2)}\n`;
-
-});
-
-receipt +=
-"--------------------------------\n";
-
-receipt +=
-"TOTAL : ₹" +
-total.toFixed(2) +
-"\n\n";
-
-receipt +=
-"Thank you - Visit again!\n";
-
-try{
-
-await qz.websocket.connect();
-
-const printer =
-await qz.printers.getDefault();
-
-const config =
-qz.configs.create(printer);
-
-await qz.print(config,[{
-type:'raw',
-format:'plain',
-data:receipt
-}]);
-
-qz.websocket.disconnect();
-
-clearBill();
-
-}catch(err){
-
-alert(
-"Printing failed : " + err
-);
-
-}
+window.print();
 
 }
 
