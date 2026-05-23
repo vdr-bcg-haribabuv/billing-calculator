@@ -13,7 +13,7 @@ padding:10px;
 }
 
 .screen-container{
-max-width:500px;
+max-width:550px;
 margin:auto;
 }
 
@@ -23,22 +23,23 @@ margin-bottom:5px;
 }
 
 .shop-title{
-font-size:20px;
-font-weight:bold;
+font-size:22px;
+font-weight:900;
 margin-bottom:2px;
 }
 
 .shop-address{
-font-size:11px;
-line-height:14px;
+font-size:13px;
+line-height:16px;
 margin-bottom:5px;
+font-weight:700;
 }
 
 .bill-info{
-font-size:11px;
-line-height:15px;
-margin-bottom:6px;
-font-weight:bold;
+font-size:13px;
+line-height:18px;
+margin-bottom:8px;
+font-weight:800;
 }
 
 .top{
@@ -47,20 +48,22 @@ margin-bottom:10px;
 }
 
 input{
-width:120px;
-padding:5px;
-font-size:14px;
+width:130px;
+padding:6px;
+font-size:15px;
+font-weight:700;
 border:1px solid #bbb;
 border-radius:4px;
 }
 
 button{
-padding:5px 10px;
+padding:6px 12px;
 border:none;
 border-radius:4px;
 cursor:pointer;
 color:white;
-font-size:12px;
+font-size:13px;
+font-weight:700;
 margin:2px;
 }
 
@@ -68,6 +71,7 @@ margin:2px;
 .print{ background:#27ae60; }
 .clear{ background:#e67e22; }
 .back{ background:#8e44ad; }
+.remove{ background:#e74c3c; }
 
 table{
 width:100%;
@@ -77,15 +81,19 @@ background:white;
 
 th,td{
 border:1px solid #000;
-padding:2px;
+padding:4px;
 text-align:center;
-font-size:12px;
-font-weight:bold;
+font-size:15px;
+font-weight:900;
 }
 
 tfoot th{
-font-size:13px;
-padding:4px;
+font-size:18px;
+padding:5px;
+}
+
+.action-col{
+width:90px;
 }
 
 .print-footer{
@@ -99,10 +107,11 @@ background:white;
 margin:0;
 padding:0;
 width:72mm;
-font-size:11px;
 }
 
 .top,
+.action-col,
+.remove-btn,
 button,
 a{
 display:none !important;
@@ -110,30 +119,30 @@ display:none !important;
 
 .shop-title{
 font-size:20px;
-font-weight:bold;
+font-weight:900;
 }
 
 .shop-address{
 font-size:12px;
 line-height:15px;
-font-weight:bold;
+font-weight:800;
 }
 
 .bill-info{
 font-size:13px;
 line-height:18px;
-font-weight:bold;
+font-weight:900;
 }
 
 th,td{
 padding:3px;
 font-size:14px;
-font-weight:bold;
+font-weight:900;
 }
 
 tfoot th{
 font-size:18px;
-font-weight:bold;
+font-weight:900;
 padding:5px;
 }
 
@@ -142,7 +151,7 @@ display:block;
 text-align:center;
 margin-top:8px;
 font-size:13px;
-font-weight:bold;
+font-weight:900;
 }
 
 }
@@ -204,9 +213,12 @@ Calculator
 <table>
 
 <thead>
+
 <tr>
 <th>Amount</th>
+<th class="action-col">Action</th>
 </tr>
+
 </thead>
 
 <tbody id="priceTable"></tbody>
@@ -215,7 +227,7 @@ Calculator
 
 <tr>
 
-<th>
+<th colspan="2">
 
 Total : ₹
 <span id="total">
@@ -333,11 +345,9 @@ let prices=[];
 let billNoValue =
 generateBillNo();
 
-document.getElementById("billNo")
-.innerText=billNoValue;
+billNo.innerText=billNoValue;
 
-document.getElementById("billDate")
-.innerText=
+billDate.innerText=
 formatDate(new Date());
 
 function loadConfig(){
@@ -354,6 +364,47 @@ localStorage.getItem("shopAddress")
 
 loadConfig();
 
+function render(){
+
+priceTable.innerHTML="";
+
+total=0;
+
+prices.forEach((value,index)=>{
+
+total += value;
+
+const row =
+document.createElement("tr");
+
+row.innerHTML=`
+
+<td ondblclick="editPrice(${index})">
+${value.toFixed(2)}
+</td>
+
+<td class="action-col remove-btn">
+
+<button class="remove"
+onclick="removePrice(${index})">
+
+Remove
+
+</button>
+
+</td>
+`;
+
+priceTable.appendChild(row);
+
+});
+
+document.getElementById("total")
+.innerText=
+total.toFixed(2);
+
+}
+
 function addPrice(){
 
 const value=
@@ -363,26 +414,36 @@ if(isNaN(value)) return;
 
 prices.push(value);
 
-total+=value;
-
-const row=
-document.createElement("tr");
-
-row.innerHTML=`
-<td>
-${value.toFixed(2)}
-</td>
-`;
-
-priceTable.appendChild(row);
-
-document.getElementById("total")
-.innerText=
-total.toFixed(2);
+render();
 
 priceInput.value="";
 
 priceInput.focus();
+
+}
+
+function removePrice(index){
+
+prices.splice(index,1);
+
+render();
+
+}
+
+function editPrice(index){
+
+const val = prompt(
+"Edit Amount",
+prices[index]
+);
+
+if(val===null)
+return;
+
+prices[index]=
+parseFloat(val);
+
+render();
 
 }
 
@@ -400,20 +461,14 @@ function clearBill(){
 
 prices=[];
 
-total=0;
-
-priceTable.innerHTML="";
-
-document.getElementById("total")
-.innerText="0.00";
+render();
 
 priceInput.value="";
 
 billNoValue =
 generateBillNo();
 
-document.getElementById("billNo")
-.innerText=billNoValue;
+billNo.innerText=billNoValue;
 
 }
 
