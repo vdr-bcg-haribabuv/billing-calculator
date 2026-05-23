@@ -23,22 +23,23 @@ margin-bottom:5px;
 }
 
 .shop-title{
-font-size:20px;
-font-weight:bold;
+font-size:22px;
+font-weight:900;
 margin-bottom:2px;
 }
 
 .shop-address{
-font-size:11px;
-line-height:14px;
+font-size:13px;
+line-height:16px;
 margin-bottom:5px;
+font-weight:700;
 }
 
 .bill-info{
-font-size:11px;
-line-height:15px;
-margin-bottom:6px;
-font-weight:bold;
+font-size:13px;
+line-height:18px;
+margin-bottom:8px;
+font-weight:800;
 }
 
 .top{
@@ -47,20 +48,22 @@ margin-bottom:10px;
 }
 
 input{
-width:70px;
-padding:4px;
-font-size:13px;
+width:75px;
+padding:5px;
+font-size:15px;
+font-weight:700;
 border:1px solid #bbb;
 border-radius:4px;
 }
 
 button{
-padding:5px 10px;
+padding:6px 12px;
 border:none;
 border-radius:4px;
 cursor:pointer;
 color:white;
-font-size:12px;
+font-size:13px;
+font-weight:700;
 margin:2px;
 }
 
@@ -78,19 +81,19 @@ background:white;
 
 th,td{
 border:1px solid #000;
-padding:2px;
+padding:4px;
 text-align:center;
-font-size:12px;
-font-weight:bold;
+font-size:15px;
+font-weight:900;
 }
 
 tfoot th{
-font-size:13px;
-padding:4px;
+font-size:18px;
+padding:5px;
 }
 
 .action-col{
-width:70px;
+width:90px;
 }
 
 .print-footer{
@@ -104,7 +107,6 @@ background:white;
 margin:0;
 padding:0;
 width:72mm;
-font-size:11px;
 }
 
 .top,
@@ -117,30 +119,30 @@ display:none !important;
 
 .shop-title{
 font-size:20px;
-font-weight:bold;
+font-weight:900;
 }
 
 .shop-address{
 font-size:12px;
 line-height:15px;
-font-weight:bold;
+font-weight:800;
 }
 
 .bill-info{
 font-size:13px;
 line-height:18px;
-font-weight:bold;
+font-weight:900;
 }
 
 th,td{
 padding:3px;
 font-size:14px;
-font-weight:bold;
+font-weight:900;
 }
 
 tfoot th{
 font-size:18px;
-font-weight:bold;
+font-weight:900;
 padding:5px;
 }
 
@@ -149,7 +151,11 @@ display:block;
 text-align:center;
 margin-top:8px;
 font-size:13px;
-font-weight:bold;
+font-weight:900;
+}
+
+.hide-print{
+display:none !important;
 }
 
 }
@@ -192,7 +198,8 @@ placeholder="Price">
 
 <input type="number"
 id="qty"
-placeholder="Qty">
+placeholder="Qty"
+value="1">
 
 <input type="number"
 id="disc"
@@ -221,11 +228,21 @@ Addition (+)
 <thead>
 
 <tr>
+
 <th>Price</th>
+
 <th>Qty</th>
-<th>Disc(%)</th>
+
+<th id="discHeader">
+Disc(%)
+</th>
+
 <th>Total</th>
-<th class="action-col">Action</th>
+
+<th class="action-col">
+Action
+</th>
+
 </tr>
 
 </thead>
@@ -352,11 +369,10 @@ let items=[];
 let billNoValue =
 generateBillNo();
 
-document.getElementById("billNo")
-.innerText=billNoValue;
+billNo.innerText=
+billNoValue;
 
-document.getElementById("billDate")
-.innerText=
+billDate.innerText=
 formatDate(new Date());
 
 function loadConfig(){
@@ -399,40 +415,28 @@ addItem();
 
 });
 
-function addItem(){
-
-const p=parseFloat(price.value);
-
-const q=parseFloat(qty.value);
-
-const d=parseFloat(disc.value)||0;
-
-if(isNaN(p)||isNaN(q))
-return;
-
-items.push({
-
-price:p,
-qty:q,
-disc:d
-
-});
-
-render();
-
-price.value="";
-qty.value="";
-disc.value="";
-
-price.focus();
-
-}
-
 function render(){
 
 rows.innerHTML="";
 
 let total=0;
+
+const hasDiscount =
+items.some(i=>i.disc>0);
+
+if(hasDiscount){
+
+discHeader.classList.remove(
+"hide-print"
+);
+
+}else{
+
+discHeader.classList.add(
+"hide-print"
+);
+
+}
 
 items.forEach((item,index)=>{
 
@@ -457,8 +461,11 @@ ${item.price.toFixed(2)}
 ${item.qty}
 </td>
 
-<td ondblclick="editCell(${index},'disc')">
+<td class="${hasDiscount ? '' : 'hide-print'}"
+ondblclick="editCell(${index},'disc')">
+
 ${item.disc}
+
 </td>
 
 <td>
@@ -483,6 +490,35 @@ rows.appendChild(tr);
 
 grand.innerText=
 total.toFixed(2);
+
+}
+
+function addItem(){
+
+const p=parseFloat(price.value);
+
+const q=parseFloat(qty.value)||1;
+
+const d=parseFloat(disc.value)||0;
+
+if(isNaN(p))
+return;
+
+items.push({
+
+price:p,
+qty:q,
+disc:d
+
+});
+
+render();
+
+price.value="";
+qty.value="1";
+disc.value="";
+
+price.focus();
 
 }
 
@@ -517,11 +553,15 @@ items=[];
 
 render();
 
+price.value="";
+qty.value="1";
+disc.value="";
+
 billNoValue =
 generateBillNo();
 
-document.getElementById("billNo")
-.innerText=billNoValue;
+billNo.innerText=
+billNoValue;
 
 }
 
@@ -570,47 +610,6 @@ JSON.stringify(bills)
 }
 
 window.print();
-
-}
-
-const params =
-new URLSearchParams(window.location.search);
-
-if(params.get("view")==="1"){
-
-const index =
-localStorage.getItem("viewBillIndex");
-
-const bills =
-JSON.parse(
-localStorage.getItem("bills") || "[]"
-);
-
-const bill = bills[index];
-
-if(bill){
-
-items = [...bill.items];
-
-render();
-
-document.getElementById("billNo")
-.innerText =
-bill.billNo;
-
-document.getElementById("billDate")
-.innerText =
-formatDate(bill.date);
-
-if(params.get("print")==="1"){
-
-setTimeout(()=>{
-window.print();
-},500);
-
-}
-
-}
 
 }
 
