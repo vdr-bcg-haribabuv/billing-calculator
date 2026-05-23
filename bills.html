@@ -14,7 +14,7 @@ padding:10px;
 }
 
 .container{
-max-width:900px;
+max-width:950px;
 margin:auto;
 }
 
@@ -31,10 +31,10 @@ margin-bottom:12px;
 
 input{
 padding:6px;
-width:180px;
-font-size:14px;
+font-size:13px;
 border:1px solid #bbb;
 border-radius:4px;
+margin:2px;
 }
 
 button{
@@ -51,16 +51,24 @@ margin:2px;
 background:#3498db;
 }
 
-.view{
+.today{
 background:#27ae60;
 }
 
-.print{
+.view{
 background:#8e44ad;
 }
 
-.back{
+.print{
 background:#e67e22;
+}
+
+.back{
+background:#34495e;
+}
+
+.clear{
+background:#e74c3c;
 }
 
 table{
@@ -89,8 +97,8 @@ font-weight:bold;
 }
 
 .empty{
+padding:15px;
 text-align:center;
-padding:20px;
 font-weight:bold;
 color:#888;
 }
@@ -109,16 +117,29 @@ color:#888;
 
 <input type="number"
 id="searchBill"
-placeholder="Search Bill No">
+placeholder="Bill No">
+
+<input type="date"
+id="searchDate">
 
 <button class="search"
 onclick="searchBills()">
 Search
 </button>
 
+<button class="today"
+onclick="todayBills()">
+Today's Bills
+</button>
+
 <button class="search"
-onclick="loadBills()">
+onclick="loadBills(bills)">
 Show All
+</button>
+
+<button class="clear"
+onclick="clearHistory()">
+Clear History
 </button>
 
 </div>
@@ -128,10 +149,17 @@ Show All
 <thead>
 
 <tr>
+
 <th>Bill No</th>
+
+<th>Type</th>
+
 <th>Date & Time</th>
+
 <th>Total</th>
+
 <th>Actions</th>
+
 </tr>
 
 </thead>
@@ -142,7 +170,7 @@ Show All
 
 <div class="total-box">
 
-Overall Total : ₹
+Total : ₹
 <span id="overallTotal">
 0.00
 </span>
@@ -183,34 +211,37 @@ Config
 
 <script>
 
-let bills =
+const bills =
 JSON.parse(
 localStorage.getItem("bills") || "[]"
 );
 
-function loadBills(filteredBills = null){
+/* LOAD TABLE */
 
-const data =
-filteredBills || bills;
+function loadBills(data){
 
-rows.innerHTML = "";
+rows.innerHTML="";
 
-let grand = 0;
+let total=0;
 
-if(data.length === 0){
+if(data.length===0){
 
-rows.innerHTML = `
+rows.innerHTML=`
+
 <tr>
-<td colspan="4"
+
+<td colspan="5"
 class="empty">
 
-No bills found
+No Bills Found
 
 </td>
+
 </tr>
+
 `;
 
-overallTotal.innerText = "0.00";
+overallTotal.innerText="0.00";
 
 return;
 
@@ -218,15 +249,19 @@ return;
 
 data.forEach((bill,index)=>{
 
-grand += Number(bill.total);
+total += Number(bill.total);
 
 const tr =
 document.createElement("tr");
 
-tr.innerHTML = `
+tr.innerHTML=`
 
 <td>
 ${bill.billNo}
+</td>
+
+<td>
+${bill.type}
 </td>
 
 <td>
@@ -263,8 +298,8 @@ rows.appendChild(tr);
 
 });
 
-overallTotal.innerText =
-grand.toFixed(2);
+overallTotal.innerText=
+total.toFixed(2);
 
 }
 
@@ -272,21 +307,49 @@ grand.toFixed(2);
 
 function searchBills(){
 
-const billNo =
+const no =
 searchBill.value.trim();
 
-if(!billNo){
+const dt =
+searchDate.value;
 
-loadBills();
+let filtered = bills;
 
-return;
+if(no){
+
+filtered =
+filtered.filter(b=>
+String(b.billNo)
+.includes(no)
+);
 
 }
 
+if(dt){
+
+filtered =
+filtered.filter(b=>
+b.date.startsWith(dt)
+);
+
+}
+
+loadBills(filtered);
+
+}
+
+/* TODAY FILTER */
+
+function todayBills(){
+
+const today =
+new Date()
+.toISOString()
+.split("T")[0];
+
 const filtered =
-bills.filter(b =>
-String(b.billNo)
-.includes(billNo)
+bills.filter(b=>
+b.date.startsWith(today)
 );
 
 loadBills(filtered);
@@ -302,9 +365,10 @@ localStorage.setItem(
 index
 );
 
-const bill = bills[index];
+const bill =
+bills[index];
 
-if(bill.items){
+if(bill.type==="calculator"){
 
 window.location.href =
 "calculator.html?view=1";
@@ -318,7 +382,7 @@ window.location.href =
 
 }
 
-/* REPRINT */
+/* RE-PRINT */
 
 function reprintBill(index){
 
@@ -327,9 +391,10 @@ localStorage.setItem(
 index
 );
 
-const bill = bills[index];
+const bill =
+bills[index];
 
-if(bill.items){
+if(bill.type==="calculator"){
 
 window.open(
 "calculator.html?view=1&print=1",
@@ -347,9 +412,27 @@ window.open(
 
 }
 
+/* CLEAR HISTORY */
+
+function clearHistory(){
+
+const confirmDelete =
+confirm(
+"Delete all bill history?"
+);
+
+if(!confirmDelete)
+return;
+
+localStorage.removeItem("bills");
+
+location.reload();
+
+}
+
 /* INITIAL LOAD */
 
-loadBills();
+loadBills(bills);
 
 </script>
 
