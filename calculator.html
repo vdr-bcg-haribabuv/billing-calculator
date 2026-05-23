@@ -2,67 +2,66 @@
 <html>
 
 <head>
-  <title>Calculator Billing</title>
+<title>Calculator Billing</title>
 
 <style>
 
 body{
-  font-family:Arial,sans-serif;
-  background:#f4f6f8;
-  padding:10px;
+font-family:Arial,sans-serif;
+background:#f4f6f8;
+padding:10px;
 }
 
 .screen-container{
-  max-width:700px;
-  margin:auto;
+max-width:700px;
+margin:auto;
 }
 
 .receipt-header{
-  text-align:center;
-  margin-bottom:5px;
+text-align:center;
+margin-bottom:5px;
 }
 
 .shop-title{
-  font-size:20px;
-  font-weight:bold;
-  color:#000;
-  margin-bottom:2px;
+font-size:20px;
+font-weight:bold;
+margin-bottom:2px;
 }
 
 .shop-address{
-  font-size:11px;
-  line-height:14px;
-  margin-bottom:5px;
+font-size:11px;
+line-height:14px;
+margin-bottom:5px;
 }
 
 .bill-info{
-  font-size:11px;
-  line-height:15px;
-  margin-bottom:6px;
-  font-weight:bold;
+font-size:11px;
+line-height:15px;
+margin-bottom:6px;
+font-weight:bold;
 }
 
 .top{
-  text-align:center;
-  margin-bottom:10px;
+text-align:center;
+margin-bottom:10px;
 }
 
 input{
-  width:75px;
-  padding:4px;
-  font-size:13px;
-  border:1px solid #bbb;
-  border-radius:4px;
+width:70px;
+padding:4px;
+font-size:13px;
+border:1px solid #bbb;
+border-radius:4px;
 }
 
 button{
-  padding:5px 10px;
-  border:none;
-  border-radius:4px;
-  cursor:pointer;
-  color:white;
-  font-size:12px;
-  margin:2px;
+padding:5px 10px;
+border:none;
+border-radius:4px;
+cursor:pointer;
+color:white;
+font-size:12px;
+margin:2px;
 }
 
 .add{ background:#3498db; }
@@ -72,83 +71,77 @@ button{
 .remove{ background:#e74c3c; }
 
 table{
-  width:100%;
-  border-collapse:collapse;
-  background:white;
+width:100%;
+border-collapse:collapse;
+background:white;
 }
 
 th,td{
-  border:1px solid #000;
-  padding:2px;
-  text-align:center;
-  font-size:12px;
-  font-weight:bold;
+border:1px solid #000;
+padding:2px;
+text-align:center;
+font-size:12px;
+font-weight:bold;
 }
 
 tfoot th{
-  font-size:13px;
-  padding:4px;
+font-size:13px;
+padding:4px;
 }
 
 .action-col{
-  width:70px;
+width:70px;
 }
 
 .print-footer{
-  display:none;
+display:none;
 }
 
 @media print{
 
-  body{
-    background:white;
-    margin:0;
-    padding:0;
-    width:72mm;
-    font-size:11px;
-  }
+body{
+background:white;
+margin:0;
+padding:0;
+width:72mm;
+font-size:11px;
+}
 
-  .top,
-  .action-col,
-  .remove-btn,
-  button,
-  a{
-    display:none !important;
-  }
+.top,
+.action-col,
+.remove-btn,
+button,
+a{
+display:none !important;
+}
 
-  .screen-container{
-    width:100%;
-    margin:0;
-    padding:0;
-  }
+.shop-title{
+font-size:16px;
+}
 
-  .shop-title{
-    font-size:16px;
-  }
+.shop-address{
+font-size:10px;
+line-height:12px;
+}
 
-  .shop-address{
-    font-size:10px;
-    line-height:12px;
-  }
+.bill-info{
+font-size:10px;
+line-height:13px;
+}
 
-  .bill-info{
-    font-size:10px;
-    line-height:13px;
-  }
+th,td{
+padding:1px;
+font-size:10px;
+font-weight:bold;
+}
 
-  th,td{
-    padding:1px;
-    font-size:10px;
-    font-weight:bold;
-  }
-
-  .print-footer{
-    display:block;
-    text-align:center;
-    margin-top:5px;
-    font-size:10px;
-    font-weight:bold;
-  }
+.print-footer{
+display:block;
+text-align:center;
+margin-top:5px;
+font-size:10px;
+font-weight:bold;
+}
 
 }
 
@@ -260,7 +253,7 @@ Print
 
 <a href="bills.html">
 <button class="back">
-Today's Bills
+Bill History
 </button>
 </a>
 
@@ -282,15 +275,14 @@ Thank you - Visit again!
 
 let items=[];
 
-let billNo=
+let billNoValue=
 Number(localStorage.getItem("billNo")||1);
 
-billNoSpan=document.getElementById("billNo");
-billDateSpan=document.getElementById("billDate");
+document.getElementById("billNo")
+.innerText=billNoValue;
 
-billNoSpan.innerText=billNo;
-
-billDateSpan.innerText=
+document.getElementById("billDate")
+.innerText=
 new Date().toLocaleString();
 
 function loadConfig(){
@@ -310,35 +302,46 @@ loadConfig();
 price.focus();
 
 price.addEventListener("keydown",e=>{
+
 if(e.key==="Enter"){
 qty.focus();
 }
+
 });
 
 qty.addEventListener("keydown",e=>{
+
 if(e.key==="Enter"){
 disc.focus();
 }
+
 });
 
 disc.addEventListener("keydown",e=>{
+
 if(e.key==="Enter"){
 addItem();
 }
+
 });
 
 function addItem(){
 
 const p=parseFloat(price.value);
+
 const q=parseFloat(qty.value);
+
 const d=parseFloat(disc.value)||0;
 
-if(isNaN(p)||isNaN(q)) return;
+if(isNaN(p)||isNaN(q))
+return;
 
 items.push({
+
 price:p,
 qty:q,
 disc:d
+
 });
 
 render();
@@ -359,7 +362,8 @@ let total=0;
 
 items.forEach((item,index)=>{
 
-const base=item.price*item.qty;
+const base=
+item.price*item.qty;
 
 const final=
 base-(base*item.disc/100);
@@ -423,7 +427,8 @@ const val=prompt(
 items[index][key]
 );
 
-if(val===null) return;
+if(val===null)
+return;
 
 items[index][key]=
 parseFloat(val);
@@ -446,9 +451,10 @@ let total=0;
 
 items.forEach(i=>{
 
-const base=i.price*i.qty;
+const base=
+i.price*i.qty;
 
-total+=
+total +=
 base-(base*i.disc/100);
 
 });
@@ -459,9 +465,13 @@ localStorage.getItem("bills")||"[]"
 
 bills.push({
 
-billNo,
+type:"calculator",
+
+billNo:billNoValue,
 
 date:new Date().toISOString(),
+
+items:[...items],
 
 total
 
@@ -474,10 +484,52 @@ JSON.stringify(bills)
 
 localStorage.setItem(
 "billNo",
-billNo+1
+billNoValue+1
 );
 
 window.print();
+
+}
+
+const params =
+new URLSearchParams(window.location.search);
+
+if(params.get("view")==="1"){
+
+const index =
+localStorage.getItem("viewBillIndex");
+
+const bills =
+JSON.parse(
+localStorage.getItem("bills") || "[]"
+);
+
+const bill = bills[index];
+
+if(bill){
+
+items = [...bill.items];
+
+render();
+
+document.getElementById("billNo")
+.innerText =
+bill.billNo;
+
+document.getElementById("billDate")
+.innerText =
+new Date(bill.date)
+.toLocaleString();
+
+if(params.get("print")==="1"){
+
+setTimeout(()=>{
+window.print();
+},500);
+
+}
+
+}
 
 }
 
