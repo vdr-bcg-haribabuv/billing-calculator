@@ -256,14 +256,80 @@ let total=0;
 
 let prices=[];
 
-let billNoValue=
-Number(localStorage.getItem("billNo")||1);
+function generateBillNo(){
+
+const now = new Date();
+
+const dd =
+String(now.getDate())
+.padStart(2,"0");
+
+const mm =
+String(now.getMonth()+1)
+.padStart(2,"0");
+
+const yy =
+String(now.getFullYear())
+.slice(-2);
+
+const hh =
+String(now.getHours())
+.padStart(2,"0");
+
+const min =
+String(now.getMinutes())
+.padStart(2,"0");
+
+return dd+mm+yy+hh+min;
+
+}
+
+let billNoValue =
+generateBillNo();
 
 document.getElementById("billNo").innerText=
 billNoValue;
 
-document.getElementById("billDate").innerText=
-new Date().toLocaleString();
+function formatDate(date){
+
+const d = new Date(date);
+
+const dd =
+String(d.getDate())
+.padStart(2,"0");
+
+const mm =
+String(d.getMonth()+1)
+.padStart(2,"0");
+
+const yyyy =
+d.getFullYear();
+
+let hh =
+d.getHours();
+
+const min =
+String(d.getMinutes())
+.padStart(2,"0");
+
+const ampm =
+hh >= 12 ? "PM" : "AM";
+
+hh = hh % 12;
+
+hh = hh ? hh : 12;
+
+hh =
+String(hh)
+.padStart(2,"0");
+
+return `${dd}/${mm}/${yyyy} ${hh}:${min} ${ampm}`;
+
+}
+
+document.getElementById("billDate")
+.innerText =
+formatDate(new Date());
 
 function loadConfig(){
 
@@ -420,8 +486,7 @@ bill.billNo;
 
 document.getElementById("billDate")
 .innerText =
-new Date(bill.date)
-.toLocaleString();
+formatDate(bill.date);
 
 if(params.get("print")==="1"){
 
