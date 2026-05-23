@@ -116,30 +116,39 @@ display:none !important;
 }
 
 .shop-title{
-font-size:16px;
+font-size:20px;
+font-weight:bold;
 }
 
 .shop-address{
-font-size:10px;
-line-height:12px;
+font-size:12px;
+line-height:15px;
+font-weight:bold;
 }
 
 .bill-info{
-font-size:10px;
-line-height:13px;
+font-size:13px;
+line-height:18px;
+font-weight:bold;
 }
 
 th,td{
-padding:1px;
-font-size:10px;
+padding:3px;
+font-size:14px;
 font-weight:bold;
+}
+
+tfoot th{
+font-size:18px;
+font-weight:bold;
+padding:5px;
 }
 
 .print-footer{
 display:block;
 text-align:center;
-margin-top:5px;
-font-size:10px;
+margin-top:8px;
+font-size:13px;
 font-weight:bold;
 }
 
@@ -187,7 +196,7 @@ placeholder="Qty">
 
 <input type="number"
 id="disc"
-placeholder="Disc (%)">
+placeholder="Disc(%)">
 
 <button class="add"
 onclick="addItem()">
@@ -273,8 +282,6 @@ Thank you - Visit again!
 
 <script>
 
-let items=[];
-
 function generateBillNo(){
 
 const now = new Date();
@@ -302,12 +309,6 @@ String(now.getMinutes())
 return dd+mm+yy+hh+min;
 
 }
-
-let billNoValue =
-generateBillNo();
-
-document.getElementById("billNo")
-.innerText=billNoValue;
 
 function formatDate(date){
 
@@ -346,8 +347,16 @@ return `${dd}/${mm}/${yyyy} ${hh}:${min} ${ampm}`;
 
 }
 
+let items=[];
+
+let billNoValue =
+generateBillNo();
+
+document.getElementById("billNo")
+.innerText=billNoValue;
+
 document.getElementById("billDate")
-.innerText =
+.innerText=
 formatDate(new Date());
 
 function loadConfig(){
@@ -508,6 +517,12 @@ items=[];
 
 render();
 
+billNoValue =
+generateBillNo();
+
+document.getElementById("billNo")
+.innerText=billNoValue;
+
 }
 
 function printBill(){
@@ -528,9 +543,19 @@ const bills=JSON.parse(
 localStorage.getItem("bills")||"[]"
 );
 
-bills.push({
+const alreadyExists =
+bills.some(b =>
+b.billNo === billNoValue
+);
 
-type:"calculator",
+if(alreadyExists){
+
+window.print();
+return;
+
+}
+
+bills.push({
 
 billNo:billNoValue,
 
@@ -545,11 +570,6 @@ total
 localStorage.setItem(
 "bills",
 JSON.stringify(bills)
-);
-
-localStorage.setItem(
-"billNo",
-billNoValue+1
 );
 
 window.print();
@@ -582,7 +602,8 @@ document.getElementById("billNo")
 bill.billNo;
 
 document.getElementById("billDate")
-.innerText =formatDate(bill.date);
+.innerText =
+formatDate(bill.date);
 
 if(params.get("print")==="1"){
 
