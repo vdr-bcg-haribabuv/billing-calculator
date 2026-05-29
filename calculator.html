@@ -630,6 +630,19 @@ JSON.stringify(bills)
 window.print();
 
 }
+document.addEventListener("keydown", function(e){
+
+    if(e.code !== "Space")
+        return;
+
+    e.preventDefault();
+
+    if(items.length === 0)
+        return;
+
+    printBill();
+
+});
 
 </script>
 
