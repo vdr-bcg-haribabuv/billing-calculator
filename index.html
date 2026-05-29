@@ -516,28 +516,20 @@ JSON.stringify(bills)
 window.print();
 
 }
-  document.addEventListener("keydown", function(e){
+document.addEventListener("keydown", function(e){
 
-    // Ignore if user is currently typing in a field
-    const active =
-        document.activeElement.tagName;
-
-    if(
-        active === "INPUT" ||
-        active === "TEXTAREA"
-    ){
+    if(e.code !== "Space")
         return;
-    }
 
-    if(e.code === "Space"){
+    e.preventDefault();
 
-        e.preventDefault();
+    if(prices.length === 0)
+        return;
 
-        printBill();
-
-    }
+    printBill();
 
 });
+ 
 
 </script>
 
