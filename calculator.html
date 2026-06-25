@@ -108,11 +108,11 @@ display:none !important;
 @media print{
 
 body{
-background:white;
-margin:0;
-padding:0;
-width:72mm;
-font-family:Arial,sans-serif;
+    background:white;
+    margin:0;
+    padding:0;
+    width:72mm;
+    font-family:Arial,sans-serif;
 }
 
 .top,
@@ -120,48 +120,71 @@ font-family:Arial,sans-serif;
 .remove-btn,
 button,
 a{
-display:none !important;
+    display:none !important;
+}
+
+.receipt-header{
+    margin-bottom:8px;
 }
 
 .shop-title{
-font-size:20px;
-font-weight:bold;
+    font-size:30px;
+    font-weight:900;
+    line-height:32px;
 }
 
 .shop-address{
-font-size:12px;
-line-height:15px;
-font-weight:bold;
+    font-size:18px;
+    line-height:22px;
+    font-weight:800;
+    margin-top:3px;
 }
 
 .bill-info{
-font-size:13px;
-line-height:18px;
-font-weight:bold;
+    font-size:18px;
+    line-height:24px;
+    font-weight:800;
+    margin-top:8px;
+    margin-bottom:10px;
 }
 
-th,td{
-padding:3px;
-font-size:14px;
-font-weight:bold;
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    padding:6px;
+    font-size:25px;
+    font-weight:900;
+    border:1px solid #000;
+}
+
+td{
+    padding:6px;
+    font-size:25px;
+    font-weight:900;
+    border:1px solid #000;
 }
 
 tfoot th{
-font-size:18px;
-font-weight:bold;
-padding:5px;
+    font-size:30px;
+    font-weight:900;
+    padding:8px;
 }
 
 .print-footer{
-display:block;
-text-align:center;
-margin-top:8px;
-font-size:13px;
-font-weight:bold;
+    display:block;
+    text-align:center;
+    margin-top:12px;
+    font-size:18px;
+    font-weight:800;
 }
 
 .hide-print{
-display:none !important;
+    display:none !important;
+}
+
 }
 
 }
