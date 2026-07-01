@@ -105,6 +105,10 @@ display:none;
 display:none !important;
 }
 
+.hide-disc{
+display:none !important;
+}
+
 @media print{
 
 body{
@@ -372,6 +376,14 @@ return `${dd}/${mm}/${yyyy} ${hh}:${min} ${ampm}`;
 
 let items=[];
 
+const discountEnabled =
+localStorage.getItem("showDiscount") !== "false";
+
+if(!discountEnabled){
+document.getElementById("disc").style.display = "none";
+document.getElementById("discHeader").style.display = "none";
+}
+
 let billNoValue =
 generateBillNo();
 
@@ -440,9 +452,13 @@ rows.innerHTML="";
 let total=0;
 
 const hasDiscount =
-items.some(i=>i.disc>0);
+discountEnabled && items.some(i=>i.disc>0);
 
-if(hasDiscount){
+if(!discountEnabled){
+
+discHeader.style.display = "none";
+
+}else if(hasDiscount){
 
 discHeader.classList.remove(
 "hide-print"
@@ -479,7 +495,7 @@ ${item.price.toFixed(2)}
 ${item.qty}
 </td>
 
-<td class="${hasDiscount ? '' : 'hide-print'}"
+<td class="${!discountEnabled ? 'hide-disc' : (hasDiscount ? '' : 'hide-print')}"
 ondblclick="editCell(${index},'disc')">
 
 ${item.disc > 0 ? item.disc : ''}
