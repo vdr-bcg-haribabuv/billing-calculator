@@ -129,6 +129,18 @@ Shop Address
 <textarea
 id="shopAddress"></textarea>
 
+<h2 style="margin-top:25px;">Calculator Settings</h2>
+
+<label style="display:flex;align-items:center;gap:8px;margin-top:12px;">
+
+<input type="checkbox"
+id="showDiscount"
+style="width:auto;">
+
+Show Discount (%) column in Calculator
+
+</label>
+
 <h2 style="margin-top:25px;">Print Font Size Settings</h2>
 
 <label>
@@ -225,6 +237,10 @@ document.getElementById(id).value =
 localStorage.getItem(id) || "";
 });
 
+const discVal = localStorage.getItem("showDiscount");
+document.getElementById("showDiscount").checked =
+discVal === null ? true : discVal === "true";
+
 }
 
 function saveConfig(){
@@ -249,6 +265,11 @@ localStorage.setItem(id, val);
 localStorage.removeItem(id);
 }
 });
+
+localStorage.setItem(
+"showDiscount",
+document.getElementById("showDiscount").checked
+);
 
 alert(
 "Configuration Saved Successfully"
