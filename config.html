@@ -2,160 +2,85 @@
 <html>
 
 <head>
-<title>Addition Billing</title>
+
+<title>Configuration</title>
 
 <style>
 
 body{
 font-family:Arial,sans-serif;
 background:#f4f6f8;
-padding:10px;
+padding:15px;
 }
 
-.screen-container{
-max-width:550px;
+.container{
+max-width:500px;
 margin:auto;
+background:white;
+padding:20px;
+border-radius:8px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
-.receipt-header{
+h2{
 text-align:center;
-margin-bottom:5px;
-}
-
-.shop-title{
-font-size:22px;
+margin-bottom:20px;
+font-size:28px;
 font-weight:900;
-margin-bottom:2px;
+color:#2c3e50;
 }
 
-.shop-address{
-font-size:13px;
-line-height:16px;
+label{
+display:block;
+margin-top:12px;
 margin-bottom:5px;
-font-weight:700;
-}
-
-.bill-info{
-font-size:13px;
-line-height:18px;
-margin-bottom:8px;
+font-size:15px;
 font-weight:800;
 }
 
-.top{
-text-align:center;
-margin-bottom:10px;
-}
-
-input{
-width:130px;
-padding:6px;
+input,
+textarea{
+width:100%;
+padding:8px;
 font-size:15px;
 font-weight:700;
 border:1px solid #bbb;
 border-radius:4px;
+box-sizing:border-box;
+}
+
+textarea{
+resize:vertical;
+height:80px;
 }
 
 button{
-padding:6px 12px;
+padding:8px 14px;
 border:none;
 border-radius:4px;
 cursor:pointer;
 color:white;
-font-size:13px;
-font-weight:700;
-margin:2px;
-}
-
-.add{ background:#3498db; }
-.print{ background:#27ae60; }
-.clear{ background:#e67e22; }
-.back{ background:#8e44ad; }
-.remove{ background:#e74c3c; }
-
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-}
-
-th,td{
-border:1px solid #000;
-padding:4px;
-text-align:center;
-font-size:15px;
-font-weight:900;
-}
-
-tfoot th{
-font-size:18px;
-padding:5px;
-font-weight:900;
-}
-
-.action-col{
-width:90px;
-}
-
-.print-footer{
-display:none;
-}
-
-@media print{
-
-body{
-background:white;
-margin:0;
-padding:0;
-width:72mm;
-font-family:Arial,sans-serif;
-}
-
-.top,
-.action-col,
-remove-btn,
-button,
-a{
-display:none !important;
-}
-
-.shop-title{
-font-size:20px;
-font-weight:bold;
-}
-
-.shop-address{
-font-size:12px;
-line-height:15px;
-font-weight:bold;
-}
-
-.bill-info{
-font-size:13px;
-line-height:18px;
-font-weight:bold;
-}
-
-th,td{
-padding:3px;
 font-size:14px;
-font-weight:bold;
+font-weight:800;
+margin-top:15px;
+margin-right:5px;
 }
 
-tfoot th{
-font-size:18px;
-font-weight:bold;
-padding:5px;
+.save{
+background:#27ae60;
 }
 
-.print-footer{
-display:block;
+.back{
+background:#8e44ad;
+}
+
+.top-nav{
 text-align:center;
-margin-top:8px;
-font-size:13px;
-font-weight:bold;
+margin-bottom:15px;
 }
 
+.top-nav button{
+background:#34495e;
 }
 
 </style>
@@ -164,407 +89,174 @@ font-weight:bold;
 
 <body>
 
-<div class="screen-container">
+<div class="container">
 
-<div class="receipt-header">
+<div class="top-nav">
 
-<div class="shop-title"
-id="shopName"></div>
-
-<div class="shop-address"
-id="shopAddress"></div>
-
-</div>
-
-<div class="bill-info">
-
-Bill No :
-<span id="billNo"></span>
-
-<br>
-
-Date :
-<span id="billDate"></span>
-
-</div>
-
-<div class="top">
-
-<input type="number"
-id="priceInput"
-placeholder="Amount">
-
-<button class="add"
-onclick="addPrice()">
-Add
+<a href="index.html?v=2">
+<button type="button">
+Addition (+)
 </button>
+</a>
 
-<button class="clear"
-onclick="clearBill()">
-New Bill
-</button>
-
-<a href="calculator.html?v=2"">
-<button class="back">
+<a href="calculator.html?v=2">
+<button type="button">
 Calculator
 </button>
 </a>
 
-</div>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Amount</th>
-
-<th class="action-col">
-Action
-</th>
-
-</tr>
-
-</thead>
-
-<tbody id="priceTable"></tbody>
-
-<tfoot>
-
-<tr>
-
-<th colspan="2">
-
-Total : ₹
-<span id="total">
-0.00
-</span>
-
-</th>
-
-</tr>
-
-</tfoot>
-
-</table>
-
-<br>
-
-<div style="text-align:center;">
-
-<button class="print"
-onclick="printBill()">
-Print
-</button>
-
 <a href="bills.html?v=2">
-<button class="back">
+<button type="button">
 Bill History
 </button>
 </a>
 
-<a href="config.html?v=2">
-<button class="back">
-Config
+</div>
+
+<h2>Shop Configuration</h2>
+
+<label>
+Shop Name
+</label>
+
+<input type="text"
+id="shopName">
+
+<label>
+Shop Address
+</label>
+
+<textarea
+id="shopAddress"></textarea>
+
+<h2 style="margin-top:25px;">Print Font Size Settings</h2>
+
+<label>
+Shop Name Font Size (px)
+</label>
+
+<input type="number"
+id="printShopNameSize"
+placeholder="20">
+
+<label>
+Shop Address Font Size (px)
+</label>
+
+<input type="number"
+id="printAddressSize"
+placeholder="12">
+
+<label>
+Bill Info Font Size (px)
+</label>
+
+<input type="number"
+id="printBillInfoSize"
+placeholder="13">
+
+<label>
+Table Header Font Size (px)
+</label>
+
+<input type="number"
+id="printHeaderSize"
+placeholder="14">
+
+<label>
+Table Body Font Size (px)
+</label>
+
+<input type="number"
+id="printBodySize"
+placeholder="14">
+
+<label>
+Grand Total Font Size (px)
+</label>
+
+<input type="number"
+id="printTotalSize"
+placeholder="18">
+
+<label>
+Footer Font Size (px)
+</label>
+
+<input type="number"
+id="printFooterSize"
+placeholder="13">
+
+<button class="save"
+onclick="saveConfig()">
+
+Save Configuration
+
 </button>
-</a>
-
-</div>
-
-<div class="print-footer">
-Thank you - Visit again!
-</div>
 
 </div>
 
 <script>
 
-function generateBillNo(){
-
-const now = new Date();
-
-const dd =
-String(now.getDate())
-.padStart(2,"0");
-
-const mm =
-String(now.getMonth()+1)
-.padStart(2,"0");
-
-const yy =
-String(now.getFullYear())
-.slice(-2);
-
-const hh =
-String(now.getHours())
-.padStart(2,"0");
-
-const min =
-String(now.getMinutes())
-.padStart(2,"0");
-
-return dd+mm+yy+hh+min;
-
-}
-
-function formatDate(date){
-
-const d = new Date(date);
-
-const dd =
-String(d.getDate())
-.padStart(2,"0");
-
-const mm =
-String(d.getMonth()+1)
-.padStart(2,"0");
-
-const yyyy =
-d.getFullYear();
-
-let hh =
-d.getHours();
-
-const min =
-String(d.getMinutes())
-.padStart(2,"0");
-
-const ampm =
-hh >= 12 ? "PM" : "AM";
-
-hh = hh % 12;
-
-hh = hh ? hh : 12;
-
-hh =
-String(hh)
-.padStart(2,"0");
-
-return `${dd}/${mm}/${yyyy} ${hh}:${min} ${ampm}`;
-
-}
-
-let total=0;
-
-let prices=[];
-
-let billNoValue =
-generateBillNo();
-
-billNo.innerText=
-billNoValue;
-
-billDate.innerText=
-formatDate(new Date());
+const fontFields = [
+"printShopNameSize",
+"printAddressSize",
+"printBillInfoSize",
+"printHeaderSize",
+"printBodySize",
+"printTotalSize",
+"printFooterSize"
+];
 
 function loadConfig(){
 
-shopName.innerText=
+document.getElementById("shopName")
+.value =
 localStorage.getItem("shopName")
-||"My Shop";
+|| "";
 
-shopAddress.innerText=
+document.getElementById("shopAddress")
+.value =
 localStorage.getItem("shopAddress")
-||"";
+|| "";
+
+fontFields.forEach(id => {
+document.getElementById(id).value =
+localStorage.getItem(id) || "";
+});
+
+}
+
+function saveConfig(){
+
+localStorage.setItem(
+"shopName",
+document.getElementById("shopName")
+.value
+);
+
+localStorage.setItem(
+"shopAddress",
+document.getElementById("shopAddress")
+.value
+);
+
+fontFields.forEach(id => {
+const val = document.getElementById(id).value;
+if(val){
+localStorage.setItem(id, val);
+} else {
+localStorage.removeItem(id);
+}
+});
+
+alert(
+"Configuration Saved Successfully"
+);
 
 }
 
 loadConfig();
-
-function render(){
-
-priceTable.innerHTML="";
-
-total=0;
-
-prices.forEach((value,index)=>{
-
-total += value;
-
-const row =
-document.createElement("tr");
-
-row.innerHTML=`
-
-<td ondblclick="editPrice(${index})">
-${value.toFixed(2)}
-</td>
-
-<td class="action-col remove-btn">
-
-<button class="remove"
-onclick="removePrice(${index})">
-
-Remove
-
-</button>
-
-</td>
-`;
-
-priceTable.appendChild(row);
-
-});
-
-document.getElementById("total")
-.innerText=
-total.toFixed(2);
-
-}
-
-function addPrice(){
-
-const value=
-parseFloat(priceInput.value);
-
-if(isNaN(value)) return;
-
-prices.push(value);
-
-render();
-
-priceInput.value="";
-
-priceInput.focus();
-
-}
-
-function removePrice(index){
-
-prices.splice(index,1);
-
-render();
-
-}
-
-function editPrice(index){
-
-const val = prompt(
-"Edit Amount",
-prices[index]
-);
-
-if(val===null)
-return;
-
-prices[index]=
-parseFloat(val);
-
-render();
-
-}
-
-priceInput.addEventListener(
-"keydown",
-e=>{
-
-if(e.key==="Enter"){
-addPrice();
-}
-
-});
-
-function clearBill(){
-
-prices=[];
-
-render();
-
-priceInput.value="";
-
-billNoValue =
-generateBillNo();
-
-billNo.innerText=
-billNoValue;
-
-}
-
-function printBill(){
-
-const bills=JSON.parse(
-localStorage.getItem("bills")||"[]"
-);
-
-const alreadyExists =
-bills.some(b =>
-b.billNo === billNoValue
-);
-
-if(!alreadyExists){
-
-bills.push({
-
-billNo:billNoValue,
-
-date:new Date().toISOString(),
-
-prices:[...prices],
-
-total:total
-
-});
-
-localStorage.setItem(
-"bills",
-JSON.stringify(bills)
-);
-
-}
-
-applyPrintFontConfig();
-
-window.print();
-
-}
-
-function applyPrintFontConfig(){
-
-let style = document.getElementById("dynamicPrintStyle");
-if(style) style.remove();
-
-style = document.createElement("style");
-style.id = "dynamicPrintStyle";
-
-const shopName = localStorage.getItem("printShopNameSize");
-const address = localStorage.getItem("printAddressSize");
-const billInfo = localStorage.getItem("printBillInfoSize");
-const header = localStorage.getItem("printHeaderSize");
-const body = localStorage.getItem("printBodySize");
-const total = localStorage.getItem("printTotalSize");
-const footer = localStorage.getItem("printFooterSize");
-
-let css = "@media print {";
-
-if(shopName) css += `.shop-title { font-size: ${shopName}px !important; }`;
-if(address) css += `.shop-address { font-size: ${address}px !important; }`;
-if(billInfo) css += `.bill-info { font-size: ${billInfo}px !important; }`;
-if(header) css += `thead th { font-size: ${header}px !important; }`;
-if(body) css += `tbody td { font-size: ${body}px !important; }`;
-if(total) css += `tfoot th { font-size: ${total}px !important; }`;
-if(footer) css += `.print-footer { font-size: ${footer}px !important; }`;
-
-css += "}";
-
-style.textContent = css;
-document.head.appendChild(style);
-
-}
-document.addEventListener("keydown", function(e){
-
-    if(e.code !== "Space")
-        return;
-
-    e.preventDefault();
-
-    if(prices.length === 0)
-        return;
-
-    printBill();
-
-});
- 
 
 </script>
 
