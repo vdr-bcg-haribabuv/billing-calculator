@@ -432,7 +432,11 @@ qty.select();
 qty.addEventListener("keydown",e=>{
 
 if(e.key==="Enter"){
+if(discountEnabled){
 disc.focus();
+}else{
+addItem();
+}
 }
 
 });
@@ -511,7 +515,7 @@ ${final.toFixed(2)}
 <button class="remove"
 onclick="removeItem(${index})">
 
-Remove
+X
 
 </button>
 
