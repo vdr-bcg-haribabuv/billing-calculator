@@ -627,7 +627,42 @@ JSON.stringify(bills)
 
 }
 
+applyPrintFontConfig();
+
 window.print();
+
+}
+
+function applyPrintFontConfig(){
+
+let style = document.getElementById("dynamicPrintStyle");
+if(style) style.remove();
+
+style = document.createElement("style");
+style.id = "dynamicPrintStyle";
+
+const shopName = localStorage.getItem("printShopNameSize");
+const address = localStorage.getItem("printAddressSize");
+const billInfo = localStorage.getItem("printBillInfoSize");
+const header = localStorage.getItem("printHeaderSize");
+const body = localStorage.getItem("printBodySize");
+const total = localStorage.getItem("printTotalSize");
+const footer = localStorage.getItem("printFooterSize");
+
+let css = "@media print {";
+
+if(shopName) css += `.shop-title { font-size: ${shopName}px !important; }`;
+if(address) css += `.shop-address { font-size: ${address}px !important; }`;
+if(billInfo) css += `.bill-info { font-size: ${billInfo}px !important; }`;
+if(header) css += `thead th { font-size: ${header}px !important; }`;
+if(body) css += `tbody td { font-size: ${body}px !important; }`;
+if(total) css += `tfoot th { font-size: ${total}px !important; }`;
+if(footer) css += `.print-footer { font-size: ${footer}px !important; }`;
+
+css += "}";
+
+style.textContent = css;
+document.head.appendChild(style);
 
 }
 document.addEventListener("keydown", function(e){
